@@ -125,7 +125,7 @@ declare module '@girder/components/src' {
     const accessLevelChecker: Record<string, unknown>;
     const dateFormatter: Record<string, unknown>;
     const fileUploader: Record<string, unknown>;
-    const jobFormatter: Record<string, unknown>;
+    // const jobFormatter: Record<string, unknown>;
     const progressReporter: Record<string, unknown>;
     const sizeFormatter: Record<string, unknown>;
     const usernameFormatter: Record<string, unknown>;

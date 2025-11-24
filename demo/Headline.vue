@@ -1,8 +1,8 @@
-<script>
-const repoBase = 'https://github.com/girder/girder_web_components/blob/master/';
+<script setup>
+  import { ref } from 'vue'
 
-export default {
-  props: {
+  // ---- Props ----
+  const props = defineProps({
     title: {
       type: String,
       required: true,
@@ -15,25 +15,26 @@ export default {
       type: String,
       required: true,
     },
-  },
-  data: () => ({ repoBase }),
-};
+  })
+
+  // ---- State ----
+  const repoBase = ref('https://github.com/girder/girder_web_components/blob/master/');
 </script>
 
 <template>
   <div>
-    <div class="headline font-weight-bold mono mt-8">
+    <div class="text-h6 mono">
       {{ title }}
       <v-btn
         :href="repoBase + link"
         class="ml-2"
-        icon="icon"
+        variant="text"
+        icon="$externalLink"
         title="View source"
-      >
-        <v-icon>$vuetify.icons.externalLink</v-icon>
-      </v-btn>
+        size="small"
+      />
     </div>
-    <div class="subtitle-1 mb-4">
+    <div class="subtitle-1 ml-2">
       {{ description }}
     </div>
   </div>

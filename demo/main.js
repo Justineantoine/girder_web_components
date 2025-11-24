@@ -1,28 +1,9 @@
-import Vue from 'vue';
-import GirderPlugin, {
-  NotificationBus, RestClient, vuetify,
-} from '@/';
+import { createApp } from 'vue'
+import App from './App.vue'
 
-import App from './App.vue';
+import GirderPlugin from '@/'
 
-Vue.use(GirderPlugin);
+const app = createApp(App)
 
-const girderRest = new RestClient({
-  apiRoot: import.meta.env.VITE_API_ROOT || 'https://data.kitware.com/api/v1',
-});
-
-const notificationBus = new NotificationBus(girderRest, {
-  useEventSource: true,
-});
-
-girderRest.fetchUser().then((user) => {
-  if (user) {
-    notificationBus.connect();
-  }
-
-  new Vue({
-    vuetify,
-    provide: { girderRest, notificationBus },
-    render: (h) => h(App),
-  }).$mount('#app');
-});
+app.use(GirderPlugin, {girder: {apiRoot: import.meta.env.VITE_API_ROOT}, notification: {useEventSource: true}})
+app.mount('#app')

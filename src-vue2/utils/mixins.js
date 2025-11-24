@@ -1,8 +1,8 @@
 import moment from 'moment';
 
 import { AccessType } from '../constants';
-// import * as jobstatus from '../components/Job/status';
-import UploadManager from './uploadManager';
+import * as jobstatus from '../components/Job/status';
+import UploadManager from './upload';
 
 /**
  * for components that need to show a locale-formatted date
@@ -77,30 +77,30 @@ const usernameFormatter = {
  * A mixin to generically fetch display properties
  * from a girder_jobs.Job schema'd json object.
  */
-// const jobFormatter = {
-//   methods: {
-//     progressAsNumber(progress) {
-//       if (!progress) {
-//         return 100;
-//       }
-//       return 100 * (progress.current / progress.total);
-//     },
-//     formatJob(job) {
-//       const statusDef = { text: 'Unknown', ...jobstatus.getByValue(job.status) };
-//       return {
-//         statusText: statusDef.text,
-//         statusColor: statusDef.color,
-//         statusTextColor: statusDef.textColor || 'white',
-//         statusIcon: statusDef.icon,
-//         updateString: moment(job.updated).format('dddd, MMMM D, YYYY @ h:mm a'),
-//         progressNumber: this.progressAsNumber(job.progress),
-//         indeterminate: statusDef.indeterminate,
-//         class: statusDef.class,
-//         ...job,
-//       };
-//     },
-//   },
-// };
+const jobFormatter = {
+  methods: {
+    progressAsNumber(progress) {
+      if (!progress) {
+        return 100;
+      }
+      return 100 * (progress.current / progress.total);
+    },
+    formatJob(job) {
+      const statusDef = { text: 'Unknown', ...jobstatus.getByValue(job.status) };
+      return {
+        statusText: statusDef.text,
+        statusColor: statusDef.color,
+        statusTextColor: statusDef.textColor || 'white',
+        statusIcon: statusDef.icon,
+        updateString: moment(job.updated).format('dddd, MMMM D, YYYY @ h:mm a'),
+        progressNumber: this.progressAsNumber(job.progress),
+        indeterminate: statusDef.indeterminate,
+        class: statusDef.class,
+        ...job,
+      };
+    },
+  },
+};
 
 /**
  * A mixin to allow components to maintan a list of files for upload.
@@ -274,7 +274,7 @@ export {
   accessLevelChecker,
   dateFormatter,
   fileUploader,
-  // jobFormatter,
+  jobFormatter,
   progressReporter,
   sizeFormatter,
   usernameFormatter,

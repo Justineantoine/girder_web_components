@@ -1,6 +1,9 @@
-<script>
-export default {
-  props: {
+<script setup>
+  import { computed } from 'vue'
+  import { useGoTo } from 'vuetify'
+
+  // ---- Props ----
+  const props = defineProps({
     title: {
       type: String,
       required: true,
@@ -9,26 +12,22 @@ export default {
       type: String,
       default: null,
     },
-  },
-  computed: {
-    listeners() {
-      if (this.href) {
-        return { click: () => { this.$vuetify.goTo(this.href); } };
-      }
-      return {};
-    },
-  },
-};
+  })
+
+  const onClick = computed(() => {
+    if (!props.href) return null
+    return () => useGoTo(props.href)
+  })
 </script>
 
 <template>
   <v-list-item
-    :link="!!href"
-    :href="href"
-    v-on="listeners"
+    :href="props.href"
+    :link="!!props.href"
+    @click="onClick"
   >
-    <v-list-item-content>
-      <v-list-item-title>{{ title }}</v-list-item-title>
-    </v-list-item-content>
+    <v-list-item-title class="text-subtitle-1">
+      {{ props.title }}
+    </v-list-item-title>
   </v-list-item>
 </template>

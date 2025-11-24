@@ -1,27 +1,25 @@
-import Vue from 'vue';
+import { reactive } from 'vue';
 
-export default class DebounceCounter extends Vue {
+export class DebounceCounter {
   constructor(delay = 200) {
-    super({
-      data() {
-        return { flag: false };
-      },
+    this.state = reactive({
+      flag: false,
+      count: 0,
     });
-    this.count = 0;
     this.delay = delay;
     this.timeout = null;
   }
 
   inc() {
-    this.count += 1;
-    if (this.count > 0) {
+    this.state.count += 1;
+    if (this.state.count > 0) {
       this._toggleFlag(true);
     }
   }
 
   dec() {
-    this.count = Math.max(0, this.count - 1);
-    if (this.count === 0) {
+    this.state.count = Math.max(0, this.state.count - 1);
+    if (this.state.count === 0) {
       this._toggleFlag(false);
     }
   }
@@ -31,7 +29,15 @@ export default class DebounceCounter extends Vue {
       clearTimeout(this.timeout);
     }
     this.timeout = setTimeout(() => {
-      this.flag = val;
+      this.state.flag = val;
     }, this.delay);
+  }
+
+  get count() {
+    return this.state.count;
+  }
+
+  get flag() {
+    return this.state.flag;
   }
 }
