@@ -61,38 +61,20 @@ export default {
 
 <template>
   <v-card variant="flat">
-    <v-tabs
-      v-model="activeTab"
-      background-color="primary"
-      dark="dark"
-    >
-      <v-tab 
-      text="Log In"
-      value="login"
-      />
-      <v-tab 
-      v-if="register"
-      text="Register"
-      value="registration"
-      />
+    <v-tabs v-model="activeTab" background-color="primary" dark="dark">
+      <v-tab text="Log In" value="login" />
+      <v-tab v-if="register" text="Register" value="registration" />
     </v-tabs>
     <v-tabs-window v-model="activeTab">
       <v-tabs-window-item value="login">
-        <girder-login
-          :oauth-providers="oauthProviders"
+        <girder-login :oauth-providers="oauthProviders"
           v-bind="{ forceOtp, forgotPasswordUrl, forgotPasswordRoute, hideForgotPassword }"
-          @forgotpassword="$emit('forgotpassword')"
-        />
+          @forgotpassword="$emit('forgotpassword')" />
       </v-tabs-window-item>
-      <v-tabs-window-item
-        v-if="register"
-        value="registration"
-      >
+      <v-tabs-window-item v-if="register" value="registration">
         <girder-register :oauth-providers="oauthProviders" />
       </v-tabs-window-item>
     </v-tabs-window>
-    
+
   </v-card>
 </template>
-
-

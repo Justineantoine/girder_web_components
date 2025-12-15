@@ -20,8 +20,36 @@ const badges = ref([
   'https://img.shields.io/github/stars/girder/girder_web_components?style=for-the-badge',
 ]);
 const currentTheme = ref(theme.global.name.value);
+const internalLocation = ref(null);
 
-const loggedOut = computed(() => !girder.state.user)
+const loggedOut = computed(() => !girder.state.user);
+
+const location = computed({
+  get() {
+    return internalLocation.value ||
+      (loggedOut.value
+        ? {
+            _id: '5c8a72438d777f072b97f9e1',
+            _modelType: 'folder',
+          }
+        : girder.rest.user
+      );
+  },
+  set(value) {
+    internalLocation.value = value;
+  },
+});
+
+const uploadDest = computed(() => {
+  if (location.value._modelType === 'folder') {
+    return location.value;
+  }
+  return {
+    name: 'temp',
+    _id: '5e2a25fdaf2e2eed35309112',
+    _modelType: 'folder',
+  };
+});
 
 function logout() {
   girder.rest.logout();
@@ -75,10 +103,11 @@ function logout() {
             :src="badge"
             class="pr-3"
           />
-          <div class="text-subtitle-1 mb-4">
+          <div class="text-subtitle-1">
             This demo integrates with
             <a href="https://data.kitware.com">data.kitware.com</a>
           </div>
+
           <a id="auth"></a>
           <headline
             title="girder-authentication"
@@ -99,24 +128,32 @@ function logout() {
               label="OAuth options"
             />
           </v-row>
-          <template v-if="loggedOut">
-            <girder-authentication
+          <girder-authentication
+              v-if="loggedOut"
               :key="girder.state.token"
               :force-otp="false"
               :register="authRegister"
               :oauth="authOauth"
               :forgot-password-url="forgotPasswordUrl"
             />
-          </template>
-          <template v-else>
-            <v-btn
-              color="primary"
-              prepend-icon="$logout"
-              @click="logout()"
-            >
-              Log Out
-            </v-btn>
-          </template>
+          <v-btn
+            v-else
+            color="primary"
+            prepend-icon="$logout"
+            @click="logout()"
+          >
+            Log Out
+          </v-btn>
+
+          <a id="upload"></a>
+          <headline
+            title="girder-upload"
+            link="src/components/Upload.vue"
+            description="upload files to a specified location in girder"
+          />
+          <girder-upload
+            :dest="uploadDest"
+          />
         </v-col>
       </v-container>
     </v-main>

@@ -47,6 +47,7 @@ export default {
       collection: 'mdi-file-tree',
       download: 'mdi-download',
       edit: 'mdi-pencil',
+      error: 'mdi-alert-circle',
       externalLink: 'mdi-open-in-new',
       file: 'mdi-file',
       fileMultiple: 'mdi-file-multiple',

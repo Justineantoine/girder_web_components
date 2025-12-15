@@ -22,7 +22,7 @@
 </script>
 
 <template>
-  <div>
+  <div class="mt-4">
     <div class="text-h6 mono">
       {{ title }}
       <v-btn

@@ -127,93 +127,38 @@ export default {
   <div class="login-widget">
     <v-container>
       <!-- Error Alert -->
-      <v-alert
-        v-if="alerts.error"
-        type="error"
-        variant="tonal"
-        closable
-        class="mt-0"
-      >
+      <v-alert v-if="alerts.error" type="error" variant="tonal" closable class="mt-0">
         {{ alerts.error }}
 
-        <v-btn
-          v-if="requiresEmailVerification"
-          size="small"
-          variant="outlined"
-          class="ml-3"
-          @click="sendVerification"
-        >
+        <v-btn v-if="requiresEmailVerification" size="small" variant="outlined" class="ml-3" @click="sendVerification">
           Resend verification email
         </v-btn>
       </v-alert>
 
       <!-- Success Alert -->
-      <v-alert
-        v-if="alerts.success"
-        type="success"
-        variant="tonal"
-        closable
-        class="mt-0"
-      >
+      <v-alert v-if="alerts.success" type="success" variant="tonal" closable class="mt-0">
         {{ alerts.success }}
       </v-alert>
 
       <!-- Login Form -->
       <v-form ref="loginForm" @submit.prevent="login">
-        <v-text-field
-          v-if="!otpFormVisible || forceOtp"
-          v-model="username"
-          :rules="nonEmptyRules"
-          variant="solo-filled"
-          flat
-          label="Username or e-mail"
-          autocomplete="username"
-          prepend-inner-icon="mdi-account"
-        />
+        <v-text-field v-if="!otpFormVisible || forceOtp" v-model="username" :rules="nonEmptyRules" variant="solo-filled"
+          flat label="Username or e-mail" autocomplete="username" prepend-inner-icon="mdi-account" />
 
-        <v-text-field
-          v-if="!otpFormVisible || forceOtp"
-          v-model="password"
-          :rules="nonEmptyRules"
-          variant="solo-filled"
-          flat
-          label="Password"
-          type="password"
-          autocomplete="current-password"
-          prepend-inner-icon="mdi-lock"
-        />
+        <v-text-field v-if="!otpFormVisible || forceOtp" v-model="password" :rules="nonEmptyRules" variant="solo-filled"
+          flat label="Password" type="password" autocomplete="current-password" prepend-inner-icon="mdi-lock" />
 
-        <v-text-field
-          v-if="otpFormVisible || forceOtp"
-          v-model="otp"
-          :rules="otpRules"
-          variant="solo-filled"
-          type="text"
-          label="Authentication code"
-          prepend-inner-icon="mdi-shield-key"
-        />
+        <v-text-field v-if="otpFormVisible || forceOtp" v-model="otp" :rules="otpRules" variant="solo-filled"
+          type="text" label="Authentication code" prepend-inner-icon="mdi-shield-key" />
 
         <div class="d-flex">
-          <v-btn
-            :loading="inProgress"
-            :disabled="inProgress"
-            type="submit"
-            color="primary"
-            rounded
-            prepend-icon="$login"
-            :text="otpFormVisible ? 'Verify code' : 'Login'"
-            variant="flat"
-          />
+          <v-btn :loading="inProgress" :disabled="inProgress" type="submit" color="primary" rounded
+            prepend-icon="$login" :text="otpFormVisible ? 'Verify code' : 'Login'" variant="flat" />
           <v-spacer />
           <template v-if="!hideForgotPassword">
             <v-spacer />
-            <v-btn
-              :to="forgotPasswordRoute"
-              :href="forgotPasswordUrl"
-              variant="text"
-              color="primary"
-              @click="$emit('forgotpassword')"
-            >
+            <v-btn :to="forgotPasswordRoute" :href="forgotPasswordUrl" variant="text" color="primary"
+              @click="$emit('forgotpassword')">
               Forgot Password?
             </v-btn>
           </template>

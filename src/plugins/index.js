@@ -1,16 +1,16 @@
-import { createGirderClient, createNotification } from '@/store'
+import { useGirderClient, useNotificationBus } from '@/composables'
 
 import vuetify from './vuetify'
 import VuetifyConfig from './vuetifyConfig'
 
-import { GirderAuthentication, GirderLogin, GirderOAuth, GirderRegister } from '@/components'
+import { GirderAuthentication, GirderLogin, GirderOAuth, GirderRegister, GirderUpload } from '@/components'
 
 
 export { VuetifyConfig }
 
 export default function install(app, options = {}) {
-  const girder = createGirderClient(options.girder || {})
-  const notification = createNotification(girder.rest, options.notification || {})
+  const girder = useGirderClient(options.girder || {})
+  const notification = useNotificationBus(girder.rest, options.notification || {})
 
   girder.rest.fetchUser().then(
     (user) => {
@@ -33,4 +33,5 @@ export default function install(app, options = {}) {
   app.component('GirderLogin', GirderLogin)
   app.component('GirderOAuth', GirderOAuth)
   app.component('GirderRegister', GirderRegister)
+  app.component('GirderUpload', GirderUpload)
 }

@@ -44,10 +44,10 @@ export default class RestClient {
     this.authenticateWithCredentials = authenticateWithCredentials
     this.useGirderAuthorizationHeader = useGirderAuthorizationHeader
 
-    this.axios = axios
+    this._axios = axios.create()
     this.emitter = mitt()
 
-    this.axios.interceptors.request.use((config) => ({
+    this._axios.interceptors.request.use((config) => ({
       ...config,
       baseURL: this.apiRoot,
       headers: {
@@ -55,6 +55,12 @@ export default class RestClient {
         ...config.headers,
       },
     }))
+
+    this.get = this._axios.get.bind(this._axios);
+    this.post = this._axios.post.bind(this._axios);
+    this.put = this._axios.put.bind(this._axios);
+    this.patch = this._axios.patch.bind(this._axios);
+    this.delete = this._axios.delete.bind(this._axios);
   }
 
   on(event, handler) {
@@ -86,7 +92,7 @@ export default class RestClient {
     }
     if (otp) headers[GirderOtp] = otp
 
-    const resp = await this.axios.get('user/authentication', {
+    const resp = await this.get('user/authentication', {
       headers,
       auth,
       withCredentials: this.authenticateWithCredentials,
@@ -103,7 +109,7 @@ export default class RestClient {
   async logout() {
     if (!this.token) return
     try {
-      await this.axios.delete('user/authentication')
+      await this.delete('user/authentication')
     } catch (err) {
       if (!err.response || err.response.status !== 401) throw err
     } finally {
@@ -115,14 +121,14 @@ export default class RestClient {
   }
 
   async fetchUser() {
-    const resp = await this.axios.get('user/me')
+    const resp = await this.get('user/me')
     this.user = resp.data
     if (this.user === null) this.token = null
     return this.user
   }
 
   async register(login, email, firstName, lastName, password, admin = false) {
-    const resp = await this.axios.post(
+    const resp = await this.post(
       'user',
       stringify({ login, email, firstName, lastName, password, admin })
     )

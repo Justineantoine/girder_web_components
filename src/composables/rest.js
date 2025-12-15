@@ -2,7 +2,7 @@ import { reactive } from 'vue'
 import RestClient from '@/utils/restClient'
 
 
-export default function createGirderClient(options = {}) {
+export default function useGirderClient(options = {}) {
     const restClient = new RestClient(options)
 
     const state = reactive({

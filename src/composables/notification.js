@@ -2,7 +2,7 @@ import { reactive } from 'vue'
 import NotificationBus from '@/utils/notificationBus'
 
 
-export default function createNotification(restClient, options = {}) {
+export default function useNotificationBus(restClient, options = {}) {
   const state = reactive({
     lastNotification: null,
     errors: [],
