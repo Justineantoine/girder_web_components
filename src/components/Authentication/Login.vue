@@ -126,19 +126,31 @@ export default {
 <template>
   <div class="login-widget">
     <v-container>
-      <!-- Error Alert -->
-      <v-alert v-if="alerts.error" type="error" variant="tonal" closable class="mt-0">
-        {{ alerts.error }}
-
-        <v-btn v-if="requiresEmailVerification" size="small" variant="outlined" class="ml-3" @click="sendVerification">
-          Resend verification email
-        </v-btn>
+      <v-alert
+        v-if="!!alerts.error"
+        type="error"
+        variant="tonal"
+        closable
+        class="mt-0"
+        :text="alerts.error"
+      >
+        <v-spacer />
+        <v-btn
+          v-if="requiresEmailVerification"
+          size="small"
+          variant="outlined"
+          @click="sendVerification"
+          text="Resend verification email"
+        />
       </v-alert>
-
-      <!-- Success Alert -->
-      <v-alert v-if="alerts.success" type="success" variant="tonal" closable class="mt-0">
-        {{ alerts.success }}
-      </v-alert>
+      <v-alert
+        v-if="alerts.success"
+        type="success"
+        variant="tonal"
+        closable
+        class="mt-0"
+        :text="alerts.success"
+      />
 
       <!-- Login Form -->
       <v-form ref="loginForm" @submit.prevent="login">
@@ -157,10 +169,14 @@ export default {
           <v-spacer />
           <template v-if="!hideForgotPassword">
             <v-spacer />
-            <v-btn :to="forgotPasswordRoute" :href="forgotPasswordUrl" variant="text" color="primary"
-              @click="$emit('forgotpassword')">
-              Forgot Password?
-            </v-btn>
+            <v-btn
+              :to="forgotPasswordRoute"
+              :href="forgotPasswordUrl"
+              variant="text"
+              color="primary"
+              @click="$emit('forgotpassword')"
+              text="Forgot password?"
+            />
           </template>
         </div>
       </v-form>

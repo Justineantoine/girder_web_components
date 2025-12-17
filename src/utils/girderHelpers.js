@@ -1,3 +1,16 @@
+import { AccessType } from '@/constants';
+
+/**
+ * Checks that user has a certain access level on a given resource
+ */
+export function hasWriteAccess(resource) {
+  return resource._accessLevel >= AccessType.WRITE;
+}
+
+export function hasAdminAccess(resource) {
+  return resource._accessLevel >= AccessType.ADMIN;
+}
+
 export function getLocationType(location) {
   return location._modelType || location.type;
 }
@@ -34,4 +47,19 @@ export function createLocationValidator(allowRoot) {
       return !!location._id;
     }
   };
+}
+
+export function getResourceIcon(resource) {
+  const icons = {
+    collection: '$collection',
+    user: '$user',
+    item: '$file',
+    group: '$userGroup',
+  };
+
+  if (resource._modelType === 'folder') {
+    return resource.public ? '$folder' : '$folderNonPublic';
+  }
+
+  return icons[resource._modelType];
 }

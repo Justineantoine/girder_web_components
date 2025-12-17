@@ -1,14 +1,16 @@
 <script setup>
-import { ref, inject, computed, watchEffect } from 'vue'
+import { ref, inject, computed } from 'vue'
 import { useTheme } from 'vuetify'
 
 import Headline from './Headline.vue';
 import NavLink from './NavLink.vue';
+import { hasAdminAccess } from '@';
 
+// ---- Injected client ----
 const girder = inject('girder');
-const theme = useTheme();
 
 // ---- State ----
+const theme = useTheme();
 const authOauth = ref(true);
 const authRegister = ref(true);
 const forgotPasswordUrl = ref('/#?dialog=resetpassword');
@@ -21,9 +23,19 @@ const badges = ref([
 ]);
 const currentTheme = ref(theme.global.name.value);
 const internalLocation = ref(null);
+const dragEnabled = ref(false);
+const rootLocationDisabled = ref(false);
+const selected = [];
+const selectable = ref(true);
+const uploadEnabled = ref(true);
+const uploadMultiple = ref(true);
+const upsertEdit = ref(false);
+const newFolderEnabled= ref(true);
+const dropped = ref([]);
+const droppedStrings = ref([]);
 
+// ---- Computed ----
 const loggedOut = computed(() => !girder.state.user);
-
 const location = computed({
   get() {
     return internalLocation.value ||
@@ -32,14 +44,13 @@ const location = computed({
             _id: '5c8a72438d777f072b97f9e1',
             _modelType: 'folder',
           }
-        : girder.rest.user
+        : girder.state.user
       );
   },
   set(value) {
     internalLocation.value = value;
   },
 });
-
 const uploadDest = computed(() => {
   if (location.value._modelType === 'folder') {
     return location.value;
@@ -51,10 +62,26 @@ const uploadDest = computed(() => {
   };
 });
 
+// ---- Methods ----
 function logout() {
   girder.rest.logout();
 }
 
+function dragend({ items }) {
+  dropped.value = items;
+}
+
+function drop(event) {
+  droppedStrings.value = event.dataTransfer.getData('application/x-girder-items');
+}
+
+function handleSearchSelect(item) {
+  if (['user', 'folder'].indexOf(item._modelType) >= 0) {
+    location.value = item;
+  } else {
+    location.value = { _modelType: 'folder', _id: item.folderId };
+  }
+}
 </script>
 
 <template>
@@ -65,6 +92,30 @@ function logout() {
         <nav-link
           title="Authentication"
           href="#auth"
+        />
+        <nav-link
+          title="Upload"
+          href="#upload"
+        />
+        <nav-link
+          title="Search"
+          href="#search"
+        />
+        <nav-link
+          title="File Manager"
+          href="#file-manager"
+        />
+        <nav-link
+          title="Access Control"
+          href="#access-control"
+        />
+        <nav-link
+          title="Upsert Folder"
+          href="#upsert-folder"
+        />
+        <nav-link
+          title="Breadcrumb"
+          href="#breadcrumb"
         />
       </v-list>
     </v-navigation-drawer>
@@ -114,18 +165,20 @@ function logout() {
             link="src/components/Authentication/Authentication.vue"
             description="allows users to authenticate with girder"
           />
-          <v-row class="ml-2">
+          <v-row class="ma-2">
             <v-switch
               v-model="authRegister"
               class="ma-2"
               hide-details="hide-details"
               label="Register tab"
+              color="primary"
             />
             <v-switch
               v-model="authOauth"
               class="ma-2"
               hide-details="hide-details"
               label="OAuth options"
+              color="primary"
             />
           </v-row>
           <girder-authentication
@@ -148,21 +201,141 @@ function logout() {
           <a id="upload"></a>
           <headline
             title="girder-upload"
-            link="src/components/Upload.vue"
+            link="src/components/Upload/Upload.vue"
             description="upload files to a specified location in girder"
           />
           <girder-upload
             :dest="uploadDest"
           />
+          <a id="search"></a>
+          <headline
+            title="girder-search"
+            link="src/components/Search.vue"
+            description="provides global search functionality"
+          />
+          <v-card class="pa-3" variant="flat">
+            <girder-search @select="handleSearchSelect" />
+          </v-card>
+
+          <a id="file-manager"></a>
+          <headline
+            title="girder-file-manager"
+            link="src/components/FileManager.vue"
+            description="a wrapper around girder-data-browser. It packages the browser with
+            defaults including folder creation, item upload, and a breadcrumb bar"
+          />
+          <v-row class="ma-2 justify-space-around">
+            <v-switch
+              v-model="selectable"
+              hide-details="hide-details"
+              label="Select"
+              color="primary"
+            />
+            <v-switch
+              v-model="dragEnabled"
+              hide-details="hide-details"
+              label="Draggable"
+              color="primary"
+            />
+            <v-switch
+              v-model="newFolderEnabled"
+              hide-details="hide-details"
+              label="New Folder"
+              color="primary"
+            />
+            <v-switch
+              v-model="uploadEnabled"
+              hide-details="hide-details"
+              label="Upload"
+              color="primary"
+            />
+            <v-switch
+              v-model="rootLocationDisabled"
+              hide-details="hide-details"
+              label="Root Disabled"
+              color="primary"
+            />
+          </v-row>
+          <girder-file-manager
+            ref="girderFileManager"
+            v-model:selected="selected"
+            v-model:location="location"
+            :items-per-page-options="[10, 20, -1]"
+            :drag-enabled="dragEnabled"
+            :new-folder-enabled="newFolderEnabled"
+            :selectable="selectable"
+            :root-location-disabled="rootLocationDisabled"
+            :upload-multiple="uploadMultiple"
+            :upload-enabled="uploadEnabled"
+            @dragend="dragend"
+          >
+            <template #row="props">
+              <i>{{ props.item.name }}</i>
+            </template>
+          </girder-file-manager>
+          <v-card
+            v-if="dragEnabled"
+            @dragenter.prevent=""
+            @dragover.prevent=""
+            @drop="drop"
+            title="Drop Zone"
+            class="mt-3"
+          >
+            <v-card-text>
+              <p v-if="!(dropped.length)">
+                Drag a row here to see results
+              </p>
+              <v-list-item
+                v-else
+                v-for="{ item } in dropped"
+                :key="item._id"
+                :title="item.name"
+                :subtitle="`${item._modelType} -- ${item.size}`"
+              />
+            </v-card-text>
+          </v-card>
+
+          <a id="access-control"></a>
+          <headline
+            title="girder-access-control"
+            link="src/components/AccessControl.vue"
+            description="access controls for folders and items"
+          />
+          <girder-access-control v-if="hasAdminAccess(uploadDest)" :model="uploadDest" />
+          <v-card v-else text="Must have Admin access to folder or collection" />
+
+          <a id="upsert-folder"></a>
+          <headline
+            title="girder-upsert-folder"
+            link="src/components/UpsertFolder.vue"
+            description="create and edit folders"
+          />
+          <v-row class="ma-2">
+            <v-switch
+              v-model="upsertEdit"
+              label="Edit Mode"
+              hide-details
+              color="primary"
+            />
+          </v-row>
+          <v-card class="pa-3" variant="flat">
+            <girder-upsert-folder
+              :location="uploadDest"
+              :edit="upsertEdit"
+            />
+          </v-card>
+          
+          <a id="breadcrumb"></a>
+          <headline
+            title="girder-breadcrumb"
+            link="src/components/Breadcrumb.vue"
+            description="filesystem path breadcrumb"
+          />
+          <v-card class="pa-3" variant="flat">
+            <girder-breadcrumb :location="uploadDest" />
+          </v-card>
         </v-col>
       </v-container>
     </v-main>
   </v-app>
 </template>
-
-<style lang="scss" scoped>
-.app {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-</style>
