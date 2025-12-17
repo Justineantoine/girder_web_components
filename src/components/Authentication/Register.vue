@@ -97,11 +97,11 @@ export default {
 <template>
   <div>
     <v-container>
-      <v-alert v-for="err in alerts.errors" :key="err" :value="true" class="mt-0" dismissible="dismissible"
+      <v-alert v-for="err in alerts.errors" :key="err" class="mt-0" dismissible="dismissible"
         type="error">
         {{ err }}
       </v-alert>
-      <v-alert v-for="info in alerts.infos" :key="info" :value="true" class="mt-0" dismissible="dismissible"
+      <v-alert v-for="info in alerts.infos" :key="info" class="mt-0" dismissible="dismissible"
         type="info">
         {{ info }}
       </v-alert>

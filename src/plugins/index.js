@@ -3,7 +3,20 @@ import { useGirderClient, useNotificationBus } from '@/composables'
 import vuetify from './vuetify'
 import VuetifyConfig from './vuetifyConfig'
 
-import { GirderAuthentication, GirderLogin, GirderOAuth, GirderRegister, GirderUpload } from '@/components'
+import {
+  GirderAuthentication,
+  GirderLogin,
+  GirderOAuth,
+  GirderRegister,
+  GirderUpload,
+  GirderDataBrowser,
+  GirderFileManager,
+  GirderMarkdownEditor,
+  GirderBreadcrumb,
+  GirderUpsertFolder,
+  GirderSearch,
+  GirderAccessControl,
+} from '@/components'
 
 
 export { VuetifyConfig }
@@ -34,4 +47,11 @@ export default function install(app, options = {}) {
   app.component('GirderOAuth', GirderOAuth)
   app.component('GirderRegister', GirderRegister)
   app.component('GirderUpload', GirderUpload)
+  app.component('GirderDataBrowser', GirderDataBrowser)
+  app.component('GirderFileManager', GirderFileManager)
+  app.component('GirderMarkdownEditor', GirderMarkdownEditor)
+  app.component('GirderBreadcrumb', GirderBreadcrumb)
+  app.component('GirderUpsertFolder', GirderUpsertFolder)
+  app.component('GirderSearch', GirderSearch)
+  app.component('GirderAccessControl', GirderAccessControl)
 }

@@ -15,7 +15,7 @@ export default {
         linkedin: { dark: true, icon: "$linkedin" },
         bitbucket: { dark: false, icon: "$bitbucket" },
         box: { dark: true, icon: "$box_com" },
-        globus: { dark: true, icon: "$globus" },
+        globus: { dark: true, icon: "$globe" },
         microsoft: { dark: true, icon: "$microsoft" },
       },
     };

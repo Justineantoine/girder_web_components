@@ -37,7 +37,7 @@ export default {
       }
 
       try {
-        const result = await girder.rest.axios.get("oauth/provider", {
+        const result = await girder.rest.get("oauth/provider", {
           params: {
             redirect: `${window.location.href}${OauthTokenPrefix}{girderToken}${OauthTokenSuffix}`,
             list: true,
