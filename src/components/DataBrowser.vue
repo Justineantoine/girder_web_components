@@ -1,6 +1,6 @@
 <script>
 import { ref, reactive, computed, watch, inject } from 'vue';
-import DataTable from './DataTable.vue';
+import { DataTable } from './DataPresentation';
 import {
   createLocationValidator,
   getLocationType,
@@ -327,11 +327,11 @@ export default {
     :loading="rowsLoading"
     :selectable="isSelectable"
     @rowclick="rowClick"
-    @row-right-click="$emit('row-right-click', $event)"
+    @row-right-click="$emit('rowRightClick', $event)"
     @drag="$emit('drag', $event)"
     @dragstart="$emit('dragstart', $event)"
     @dragend="$emit('dragend', $event)"
-    @drop="$emit('drop', $event)""
+    @drop="$emit('drop', $event)"
     @update:selected="$emit('update:selected', $event)"
     @update:options="$emit('update:options', $event)"
   >

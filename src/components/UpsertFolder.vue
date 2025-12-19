@@ -112,7 +112,7 @@ export default {
 
 <template>
   <v-form @submit.prevent="upsert">
-    <v-card variant="flat">
+    <v-card>
       <v-card-item :title="edit ? 'Edit Folder' : 'Create New Folder'" >
         <v-card-subtitle>
           <girder-breadcrumb

@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import md from 'markdown-it';
 
 export default {
-  name: 'Markdown',
+  name: 'GirderMarkdown',
   props: {
     text: { default: '', type: String },
   },

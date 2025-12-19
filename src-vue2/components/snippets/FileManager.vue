@@ -202,7 +202,7 @@ export default Vue.extend({
       :value="value"
       :items-per-page="itemsPerPage"
       :items-per-page-options="itemsPerPageOptions"
-      @update:itemsPerPage="$emit('update:itemsPerPage', $event)"
+      @update:items-per-page="$emit('update:itemsPerPage', $event)"
       @input="$emit('input', $event)"
       @selection-changed="$emit('selection-changed', $event)"
       @rowclick="$emit('rowclick', $event)"

@@ -43,8 +43,7 @@ export default {
           :label="label"
           :placeholder="placeholder"
           hide-details="hide-details"
-          filled="filled"
-          single-line="single-line"
+          variant="solo-filled"
           @change="$emit('changed', $event)"
         />
       </v-tabs-window-item>

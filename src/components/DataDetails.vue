@@ -90,10 +90,10 @@
 </template>
 
 <script>
-import GirderDetailList from './Presentation/DetailList.vue';
-import GirderMarkdown from './Markdown.vue';
-import GirderUpsertFolder from './UpsertFolder.vue';
-import { dateFormatter, sizeFormatter, usernameFormatter } from '../utils/mixins';
+import { DetailList } from './DataPresentation';
+import GirderMarkdown from '../Markdown.vue';
+import GirderUpsertFolder from '../UpsertFolder.vue';
+import { formatDate, formatSize, formatUsername } from '@/utils';
 
 function generateUrl(apiRoot, modelType, id, query = '') {
   if (['resource', 'folder', 'item', 'file'].indexOf(modelType) < 0) {
@@ -192,8 +192,9 @@ export const DefaultActionKeys = [
 ];
 
 export default {
+  name: 'GirderDataDetails',
   components: {
-    GirderDetailList,
+    DetailList,
     GirderMarkdown,
     GirderUpsertFolder,
   },

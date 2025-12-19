@@ -94,9 +94,7 @@ export default {
 </script>
 
 <template>
-  <v-card
-    variant="flat"
-  >
+  <v-card>
     <slot name="header">
       <v-card-title>
         <div

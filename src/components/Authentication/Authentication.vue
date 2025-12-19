@@ -60,7 +60,7 @@ export default {
 </script>
 
 <template>
-  <v-card variant="flat">
+  <v-card>
     <v-tabs v-model="activeTab" background-color="primary" dark="dark">
       <v-tab text="Log In" value="login" />
       <v-tab v-if="register" text="Register" value="registration" />

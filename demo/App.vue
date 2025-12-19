@@ -33,7 +33,8 @@ const upsertEdit = ref(false);
 const newFolderEnabled= ref(true);
 const dropped = ref([]);
 const droppedStrings = ref([]);
-
+const apiRoot = ref(girder.state.apiRoot);
+console.log(apiRoot.value)
 // ---- Computed ----
 const loggedOut = computed(() => !girder.state.user);
 const location = computed({
@@ -82,6 +83,12 @@ function handleSearchSelect(item) {
     location.value = { _modelType: 'folder', _id: item.folderId };
   }
 }
+
+function setApiRoot(path) {
+  console.log(path);
+  apiRoot.value = path;
+  // girder.rest.setApiRoot(path);
+}
 </script>
 
 <template>
@@ -92,31 +99,31 @@ function handleSearchSelect(item) {
         <nav-link
           title="Authentication"
           href="#auth"
-        />
+        ></nav-link>
         <nav-link
           title="Upload"
           href="#upload"
-        />
+        ></nav-link>
         <nav-link
           title="Search"
           href="#search"
-        />
+        ></nav-link>
         <nav-link
           title="File Manager"
           href="#file-manager"
-        />
+        ></nav-link>
         <nav-link
           title="Access Control"
           href="#access-control"
-        />
+        ></nav-link>
         <nav-link
           title="Upsert Folder"
           href="#upsert-folder"
-        />
+        ></nav-link>
         <nav-link
           title="Breadcrumb"
           href="#breadcrumb"
-        />
+        ></nav-link>
       </v-list>
     </v-navigation-drawer>
     <v-main>
@@ -140,7 +147,7 @@ function handleSearchSelect(item) {
               hide-details="hide-details"
               label="Dark theme"
               inset
-            />
+            ></v-switch>
           </div>
           <div class="text-subtitle-1 mb-1">
             A Vue + Vuetify library for interacting with
@@ -153,18 +160,20 @@ function handleSearchSelect(item) {
             :key="badge"
             :src="badge"
             class="pr-3"
-          />
+          ></img>
           <div class="text-subtitle-1">
             This demo integrates with
             <a href="https://data.kitware.com">data.kitware.com</a>
           </div>
+
+          <v-text-field v-model="apiRoot" append-icon="mdi-circle" @update:model-value="setApiRoot"> </v-text-field>
 
           <a id="auth"></a>
           <headline
             title="girder-authentication"
             link="src/components/Authentication/Authentication.vue"
             description="allows users to authenticate with girder"
-          />
+          ></headline>
           <v-row class="ma-2">
             <v-switch
               v-model="authRegister"
@@ -172,14 +181,14 @@ function handleSearchSelect(item) {
               hide-details="hide-details"
               label="Register tab"
               color="primary"
-            />
+            ></v-switch>
             <v-switch
               v-model="authOauth"
               class="ma-2"
               hide-details="hide-details"
               label="OAuth options"
               color="primary"
-            />
+            ></v-switch>
           </v-row>
           <girder-authentication
               v-if="loggedOut"
@@ -188,33 +197,32 @@ function handleSearchSelect(item) {
               :register="authRegister"
               :oauth="authOauth"
               :forgot-password-url="forgotPasswordUrl"
-            />
+          ></girder-authentication>
           <v-btn
             v-else
             color="primary"
             prepend-icon="$logout"
             @click="logout()"
-          >
-            Log Out
-          </v-btn>
+            text="Log out"
+          ></v-btn>
 
           <a id="upload"></a>
           <headline
             title="girder-upload"
             link="src/components/Upload/Upload.vue"
             description="upload files to a specified location in girder"
-          />
+          ></headline>
           <girder-upload
             :dest="uploadDest"
-          />
+          ></girder-upload>
           <a id="search"></a>
           <headline
             title="girder-search"
             link="src/components/Search.vue"
             description="provides global search functionality"
-          />
-          <v-card class="pa-3" variant="flat">
-            <girder-search @select="handleSearchSelect" />
+          ></headline>
+          <v-card class="pa-3">
+            <girder-search @select="handleSearchSelect"></girder-search>
           </v-card>
 
           <a id="file-manager"></a>
@@ -223,38 +231,38 @@ function handleSearchSelect(item) {
             link="src/components/FileManager.vue"
             description="a wrapper around girder-data-browser. It packages the browser with
             defaults including folder creation, item upload, and a breadcrumb bar"
-          />
+          ></headline>
           <v-row class="ma-2 justify-space-around">
             <v-switch
               v-model="selectable"
               hide-details="hide-details"
               label="Select"
               color="primary"
-            />
+            ></v-switch>
             <v-switch
               v-model="dragEnabled"
               hide-details="hide-details"
               label="Draggable"
               color="primary"
-            />
+            ></v-switch>
             <v-switch
               v-model="newFolderEnabled"
               hide-details="hide-details"
               label="New Folder"
               color="primary"
-            />
+            ></v-switch>
             <v-switch
               v-model="uploadEnabled"
               hide-details="hide-details"
               label="Upload"
               color="primary"
-            />
+            ></v-switch>
             <v-switch
               v-model="rootLocationDisabled"
               hide-details="hide-details"
               label="Root Disabled"
               color="primary"
-            />
+            ></v-switch>
           </v-row>
           <girder-file-manager
             ref="girderFileManager"
@@ -291,7 +299,7 @@ function handleSearchSelect(item) {
                 :key="item._id"
                 :title="item.name"
                 :subtitle="`${item._modelType} -- ${item.size}`"
-              />
+              ></v-list-item>
             </v-card-text>
           </v-card>
 
@@ -300,39 +308,37 @@ function handleSearchSelect(item) {
             title="girder-access-control"
             link="src/components/AccessControl.vue"
             description="access controls for folders and items"
-          />
-          <girder-access-control v-if="hasAdminAccess(uploadDest)" :model="uploadDest" />
-          <v-card v-else text="Must have Admin access to folder or collection" />
+          ></headline>
+          <girder-access-control v-if="hasAdminAccess(uploadDest)" :model="uploadDest"></girder-access-control>
+          <v-card v-else text="Must have Admin access to folder or collection"></v-card>
 
           <a id="upsert-folder"></a>
           <headline
             title="girder-upsert-folder"
             link="src/components/UpsertFolder.vue"
             description="create and edit folders"
-          />
+          ></headline>
           <v-row class="ma-2">
             <v-switch
               v-model="upsertEdit"
               label="Edit Mode"
               hide-details
               color="primary"
-            />
+            ></v-switch>
           </v-row>
-          <v-card class="pa-3" variant="flat">
-            <girder-upsert-folder
-              :location="uploadDest"
-              :edit="upsertEdit"
-            />
-          </v-card>
+          <girder-upsert-folder
+            :location="uploadDest"
+            :edit="upsertEdit"
+          ></girder-upsert-folder>
           
           <a id="breadcrumb"></a>
           <headline
             title="girder-breadcrumb"
             link="src/components/Breadcrumb.vue"
             description="filesystem path breadcrumb"
-          />
-          <v-card class="pa-3" variant="flat">
-            <girder-breadcrumb :location="uploadDest" />
+          ></headline>
+          <v-card class="pa-3">
+            <girder-breadcrumb :location="uploadDest"></girder-breadcrumb>
           </v-card>
         </v-col>
       </v-container>

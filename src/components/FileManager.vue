@@ -3,9 +3,9 @@ import { ref, computed, inject, nextTick, reactive } from 'vue';
 
 import GirderUpload from './Upload';
 import GirderUpsertFolder from './UpsertFolder.vue';
-import GirderDataBrowser from './DataBrowser';
+import GirderDataBrowser from './DataBrowser.vue';
 import GirderBreadcrumb from './Breadcrumb.vue';
-// import GirderAccessControl from '../AccessControl.vue';
+import GirderAccessControl from './AccessControl.vue';
 
 import {
   getLocationType,
@@ -17,7 +17,7 @@ export default {
   name: 'GirderFileManager',
 
   components: {
-    // GirderAccessControl,
+    GirderAccessControl,
     GirderBreadcrumb,
     GirderUpload,
     GirderUpsertFolder,
@@ -185,7 +185,7 @@ export default {
 </script>
 
 <template>
-  <v-card variant="flat">
+  <v-card>
     <girder-data-browser
       ref="girderBrowser"
       :location="location"
@@ -262,7 +262,7 @@ export default {
         :model="actOnItem"
         v-model:has-permission="hasAccessPermission"
         @close="showAccessControlDialog=false"
-        @model-access-changed="refresh"
+        @update:model-access="refresh"
       />
     </v-dialog>
   </v-card>

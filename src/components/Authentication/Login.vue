@@ -167,17 +167,15 @@ export default {
           <v-btn :loading="inProgress" :disabled="inProgress" type="submit" color="primary" rounded
             prepend-icon="$login" :text="otpFormVisible ? 'Verify code' : 'Login'" variant="flat" />
           <v-spacer />
-          <template v-if="!hideForgotPassword">
-            <v-spacer />
-            <v-btn
-              :to="forgotPasswordRoute"
-              :href="forgotPasswordUrl"
-              variant="text"
-              color="primary"
-              @click="$emit('forgotpassword')"
-              text="Forgot password?"
-            />
-          </template>
+          <v-btn
+            v-if="!hideForgotPassword"
+            :to="forgotPasswordRoute"
+            :href="forgotPasswordUrl"
+            variant="text"
+            color="primary"
+            @click="$emit('forgotpassword')"
+            text="Forgot password?"
+          />
         </div>
       </v-form>
     </v-container>

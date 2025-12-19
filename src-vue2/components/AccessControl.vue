@@ -139,7 +139,7 @@ export default {
         `${this.model._modelType}/${this.model._id}/access`,
         stringify(data),
       );
-      this.$emit('model-access-changed', this.model);
+      this.$emit('update:modelAccess', this.model);
       this.$emit('close');
     },
   },

@@ -1,7 +1,9 @@
 export * from './Authentication';
-export * from './DataBrowser';
 export * from './Upload';
-export * from './MarkdownEditor';
+
+export { default as GirderMarkdown } from './Markdown.vue';
+export { default as GirderMarkdownEditor } from './MarkdownEditor.vue';
+export { default as GirderDataBrowser } from './DataBrowser.vue';
 export { default as GirderFileManager } from './FileManager.vue';
 export { default as GirderUpsertFolder } from './UpsertFolder.vue';
 export { default as GirderBreadcrumb } from './Breadcrumb.vue';

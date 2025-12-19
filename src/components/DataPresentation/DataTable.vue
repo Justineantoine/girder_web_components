@@ -1,5 +1,4 @@
 <script>
-import { ref } from 'vue';
 import { getLocationType, isRootLocation } from '@/utils';
 
 export default {
