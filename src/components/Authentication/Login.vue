@@ -21,7 +21,7 @@ export default {
       "authentication must include a one-time password";
 
     // ---- Injected client ----
-    const girder = inject("girder");
+    const { rest } = inject("girder");
 
     // ---- State ----
     const username = ref("");
@@ -52,7 +52,7 @@ export default {
 
     // ---- Methods ----
     const sendVerification = async () => {
-      await girder.rest.post("user/verification", null, {
+      await rest.post("user/verification", null, {
         params: { login: username.value },
       });
 
@@ -71,7 +71,7 @@ export default {
       inProgress.value = true;
 
       try {
-        await girder.rest.login(
+        await rest.login(
           username.value,
           password.value,
           otp.value
@@ -117,7 +117,6 @@ export default {
       otpRules,
       login,
       sendVerification,
-      girder,
     };
   },
 };

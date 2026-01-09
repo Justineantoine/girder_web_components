@@ -22,7 +22,7 @@ export default {
 
   setup(props, ctx) {
     // ---- Injected Client ----
-    const girder = inject('girder');
+    const { rest } = inject('girder');
 
     // ---- State ----
     const publicModel = ref(false);
@@ -47,7 +47,7 @@ export default {
       loading.value = true;
       publicModel.value = model.public;
       try {
-        const { data } = await girder.rest.get(`${model._modelType}/${model._id}/access`);
+        const { data } = await rest.get(`${model._modelType}/${model._id}/access`);
         access.value = data;
       } catch (ex) {
         access.value = null;
@@ -77,7 +77,7 @@ export default {
       };
 
       const { model } = props
-      await girder.rest.put(
+      await rest.put(
         `${model._modelType}/${model._id}/access`,
         stringify(data),
       );
@@ -140,7 +140,7 @@ export default {
 </script>
 
 <template>
-  <v-card variant="flat" class="access-control">
+  <v-card class="access-control">
     <v-card-item title="Access Control">
       <v-card-subtitle>
         <girder-breadcrumb
@@ -239,49 +239,13 @@ export default {
   </v-card>
 </template>
 
-<!-- <style lang="scss" scoped>
-.v-subheader {
-  padding-left: 0;
-  height: unset;
+<style scoped lang="scss">
+.access-control {
+  :deep(.v-card-item) {
+    background-color: rgb(var(--v-theme-surface-light));
+  }
+  :deep(.v-card-text) {
+    padding: 16px;
+  }
 }
-
-.v-input.v-input--switch .v-input__slot {
-  margin-bottom: 6px;
-}
-
-.v-list.group-user {
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.height-enter-active,
-.height-leave-active {
-  transition: all 0.3s;
-  max-height: 400px !important;
-  overflow-y: hidden;
-}
-
-.height-enter,
-.height-leave-to {
-  opacity: 0;
-  max-height: 0 !important;
-}
-
-.height2-enter-active,
-.height2-leave-active {
-  transition: all 0.2s;
-  max-height: 72px !important;
-  overflow-y: hidden;
-}
-
-.height2-enter,
-.height2-leave-to {
-  opacity: 0;
-  min-height: 0 !important;
-  max-height: 0 !important;
-}
-
-.level {
-  max-width: 150px;
-}
-</style> -->
+</style>

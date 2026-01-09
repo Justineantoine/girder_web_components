@@ -1,6 +1,6 @@
 <script>
-import { ref, reactive, computed, watch, inject } from 'vue';
-import DataTable from './DataTable.vue';
+import { ref, computed, watch, inject } from 'vue';
+import GirderDataTable from './DataTable.vue';
 import {
   createLocationValidator,
   getLocationType,
@@ -17,7 +17,7 @@ export default {
   name: "GirderDataBrowser",
 
   components: {
-    DataTable,
+    GirderDataTable,
   },
 
   props: {
@@ -30,7 +30,11 @@ export default {
     selectable: { type: Boolean, default: false },
     rootLocationDisabled: { type: Boolean, default: false },
     selected: { type: Array, default: () => [] },
-    itemsPerPage: { type: Number, default: 10 },
+    options: {type: Object, default: {
+        itemsPerPage: 10,
+        page: 1,
+      }
+    },
     itemsPerPageOptions: { type: Array, default: () => [10, 25, 50] },
   },
 
@@ -47,14 +51,9 @@ export default {
 
   setup(props, ctx) {
     // ---- Injected client ----
-    const girder = inject("girder");
+    const { rest, user } = inject("girder");
 
     // ---- State ----
-    const options = reactive({
-      itemsPerPage: props.itemsPerPage,
-      page: 1,
-    });
-
     const internalRefreshCounter = ref(0);
     const rows = ref([]);
     const rowsLoading = ref(false);
@@ -65,6 +64,7 @@ export default {
       nCollections: 0,
     });
     const internalSelected = ref(props.selected);
+    const internalOptions= ref(props.options);
 
     // ---- Computed ----
     const isSelectable = computed(
@@ -131,12 +131,12 @@ export default {
       rowsLoading.value = true;
 
       const { nFolders, nItems } = counts.value;
-      const { page, itemsPerPage } = options;
+      const { page, itemsPerPage } = internalOptions.value;
       const location = props.location;
 
       let folderNotPublic = false;
       if (!location.created && location._modelType === 'folder') {
-        folderNotPublic = !(await girder.rest.get(`folder/${location._id}`)).data
+        folderNotPublic = !(await rest.get(`folder/${location._id}`)).data
           .public;
       }
 
@@ -148,7 +148,7 @@ export default {
       const foldersLeft = Math.max(nFolders - folderOffset, 0);
       if (foldersLeft > 0) {
         promises.push(
-          girder.rest.get(GIRDER_FOLDER_ENDPOINT, {
+          rest.get(GIRDER_FOLDER_ENDPOINT, {
             params: {
               parentType: location._modelType,
               parentId: location._id,
@@ -167,7 +167,7 @@ export default {
         (itemsPerPage === -1 || itemsPerPage - foldersLeft > 0)
       ) {
         promises.push(
-          girder.rest.get(GIRDER_ITEM_ENDPOINT, {
+          rest.get(GIRDER_ITEM_ENDPOINT, {
             params: {
               folderId: location._id,
               limit:
@@ -199,8 +199,8 @@ export default {
     async function fetchPaginatedCollectionOrUserRows(type) {
       rowsLoading.value = true;
 
-      const { page, itemsPerPage } = options;
-      const { data } = await girder.rest.get(type, {
+      const { page, itemsPerPage } = props.options;
+      const { data } = await rest.get(type, {
         params: {
           limit: itemsPerPage >= 0 ? itemsPerPage : null,
           offset: (page - 1) * itemsPerPage,
@@ -221,7 +221,7 @@ export default {
 
     function generateRootRows() {
       const rows = [{ type: 'collections', name: 'Collections', icon: '$collection' }];
-      if (girder.rest.user) {
+      if (rest.user) {
         rows.push({ type: 'users', name: 'Users', icon: '$user' });
       }
       return rows;
@@ -244,7 +244,7 @@ export default {
 
       try {
         if (['folder', 'user', 'collection'].includes(type)) {
-          const { data } = await girder.rest.get(`${type}/${_id}/details`);
+          const { data } = await rest.get(`${type}/${_id}/details`);
           counts.value = {
             ...base,
             nFolders: data.nFolders || 0,
@@ -254,7 +254,7 @@ export default {
         }
 
         if (type === 'users' || type === 'collections') {
-          const { data } = await girder.rest.get(
+          const { data } = await rest.get(
             `${getResourceType(type)}/details`,
           );
           const key = Object.keys(data)[0];
@@ -275,7 +275,7 @@ export default {
 
     // ---- Watchers ----
     watch(
-      [internalRefreshCounter, () => props.location, () => girder.rest.user],
+      [internalRefreshCounter, () => props.location, () => user],
       fetchCounts,
       { immediate: true },
     );
@@ -284,7 +284,7 @@ export default {
       () => props.location,
       (location) => {
         if (createLocationValidator(!props.rootLocationDisabled)(location)) {
-          options.page = 1;
+          internalOptions.value.page = 1;
           internalSelected.value = [];
         }
       },
@@ -297,12 +297,19 @@ export default {
       },
     );
 
-    watch([counts, options], async () => {
+    watch(
+      () => props.options,
+      (val) => {
+        internalOptions.value = val;
+      },
+    );
+
+    watch([counts, internalOptions], async () => {
       rows.value = await fetchPaginatedRows();
     });
 
     return {
-      options,
+      internalOptions,
       rows,
       rowsLoading,
       counts,
@@ -318,9 +325,9 @@ export default {
 </script>
 
 <template>
-  <data-table
+  <girder-data-table
     v-model:selected="internalSelected"
-    v-model:options="options"
+    v-model:options="internalOptions"
     :draggable="draggable"
     :rows="rows"
     :server-items-length="serverItemsLength"
@@ -331,14 +338,15 @@ export default {
     @drag="$emit('drag', $event)"
     @dragstart="$emit('dragstart', $event)"
     @dragend="$emit('dragend', $event)"
-    @drop="$emit('drop', $event)""
+    @drop="$emit('drop', $event)"
     @update:selected="$emit('update:selected', $event)"
     @update:options="$emit('update:options', $event)"
+    class="data-browser"
   >
     <template #header>
-        <slot v-bind="{ location, changeLocation, rootLocationDisabled }" name="breadcrumb"></slot>
-        <v-spacer />
-        <slot name="headerwidget"></slot>
+      <slot v-bind="{ location, changeLocation, rootLocationDisabled }" name="breadcrumb"></slot>
+      <v-spacer />
+      <slot name="headerwidget"></slot>
     </template>
     <template #row="props">
       <slot
@@ -346,5 +354,5 @@ export default {
         name="row"
       ></slot>
     </template>
-  </data-table>
+  </girder-data-table>
 </template>

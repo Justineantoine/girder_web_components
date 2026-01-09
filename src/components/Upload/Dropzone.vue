@@ -1,7 +1,7 @@
 <script>
 import { ref } from 'vue';
 export default {
-  name: 'Dropzone',
+  name: 'GirderDropzone',
 
   props: {
     message: { type: String, required: true },

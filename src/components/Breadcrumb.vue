@@ -16,7 +16,7 @@ export default {
   
   setup(props) {
     // ---- Injected client ----
-    const girder = inject('girder');
+    const { rest, user } = inject('girder');
     
     // ---- State ----
     const loading = ref(false);
@@ -44,61 +44,60 @@ export default {
     }
 
     async function computeBreadcrumb() {
-        loading.value = true;
-        const breadcrumb = [];
-        const { rootLocationDisabled, location } = props;
-        // The reason for this local user variable is that
-        // we have to set up reactivity dependancy before the first async function call
-        const user = girder.state.user;
-        const type = getLocationType(location);
-        const { name, _id } = location;
-        if (type === 'folder') {
-          // The last breadcrumb not returned by rootpath.
-          if (name) {
-            breadcrumb.unshift(extractCrumbData(location));
-          } else {
-            const { data } = await girder.rest.get(`folder/${_id}`);
-            breadcrumb.unshift(extractCrumbData(data));
-          }
-          // Get the rest of the path.
-          const { data } = await girder.rest.get(`folder/${_id}/rootpath`);
-          data.reverse().forEach((crumb) => {
-            breadcrumb.unshift(extractCrumbData(crumb.object));
-          });
-
-        } else if (type === 'user' || type === 'collection') {
-          const { data } = await girder.rest.get(`${type}/${_id}`);
+      loading.value = true;
+      const breadcrumb = [];
+      const { rootLocationDisabled, location } = props;
+      // The reason for this local user variable is that
+      // we have to set up reactivity dependancy before the first async function call
+      const type = getLocationType(location);
+      const { name, _id } = location;
+      if (type === 'folder') {
+        // The last breadcrumb not returned by rootpath.
+        if (name) {
+          breadcrumb.unshift(extractCrumbData(location));
+        } else {
+          const { data } = await rest.get(`folder/${_id}`);
           breadcrumb.unshift(extractCrumbData(data));
         }
+        // Get the rest of the path.
+        const { data } = await rest.get(`folder/${_id}/rootpath`);
+        data.reverse().forEach((crumb) => {
+          breadcrumb.unshift(extractCrumbData(crumb.object));
+        });
 
-        if (!rootLocationDisabled) {
-          if (
-            type === 'users'
-            || (user && breadcrumb.length && breadcrumb[0].type === 'user')
-          ) {
-            breadcrumb.unshift({ type: 'users' });
-          }
-          if (
-            type === 'collections'
-            || (breadcrumb.length && breadcrumb[0].type === 'collection')
-          ) {
-            breadcrumb.unshift({ type: 'collections' });
-          }
-          breadcrumb.unshift({ type: 'root' });
+      } else if (type === 'user' || type === 'collection') {
+        const { data } = await rest.get(`${type}/${_id}`);
+        breadcrumb.unshift(extractCrumbData(data));
+      }
+
+      if (!rootLocationDisabled) {
+        if (
+          type === 'users'
+          || (user && breadcrumb.length && breadcrumb[0].type === 'user')
+        ) {
+          breadcrumb.unshift({ type: 'users' });
         }
-        loading.value = false;
-        pathBreadcrumb.value = breadcrumb;
+        if (
+          type === 'collections'
+          || (breadcrumb.length && breadcrumb[0].type === 'collection')
+        ) {
+          breadcrumb.unshift({ type: 'collections' });
+        }
+        breadcrumb.unshift({ type: 'root' });
+      }
+      loading.value = false;
+      pathBreadcrumb.value = breadcrumb;
     }
 
     // ---- Watchers ----
     watch(
-      () => [props.location, props.rootLocationDisabled, girder.state.user],
+      () => [props.location, props.rootLocationDisabled, user],
       computeBreadcrumb,
       { immediate: true, deep: false }
     );
 
     return {
-      user: girder.state.user,
+      user,
       loading,
       breadcrumb,
     };

@@ -16,7 +16,14 @@ import {
   GirderUpsertFolder,
   GirderSearch,
   GirderAccessControl,
+  GirderDataDetails,
+  GirderDataTable,
+  GirderDetailList,
+  GirderMarkdown,
+  GirderDropzone,
+  GirderUploadFileList,
 } from '@/components'
+import { EventProp } from 'vuetify/lib/util/helpers.mjs'
 
 
 export { VuetifyConfig }
@@ -27,7 +34,7 @@ export default function install(app, options = {}) {
 
   girder.rest.fetchUser().then(
     (user) => {
-      girder.state.user = user
+      girder.user.value = user
       if (user) {
         notification.bus.connect()
       }
@@ -54,4 +61,10 @@ export default function install(app, options = {}) {
   app.component('GirderUpsertFolder', GirderUpsertFolder)
   app.component('GirderSearch', GirderSearch)
   app.component('GirderAccessControl', GirderAccessControl)
+  app.component('GirderDataDetails', GirderDataDetails)
+  app.component('GirderDataTable', GirderDataTable)
+  app.component('GirderDetailList', GirderDetailList)
+  app.component('GirderMarkdown', GirderMarkdown)
+  app.component('GirderDropzone', GirderDropzone)
+  app.component('GirderUploadFileList', GirderUploadFileList)
 }

@@ -1,9 +1,9 @@
 <script>
-import { ref } from 'vue';
+  import { computed } from 'vue'
 import { getLocationType, isRootLocation } from '@/utils';
 
 export default {
-  name: 'DataTable',
+  name: 'GirderDataTable',
 
   props: {
     draggable: {type: Boolean, default: false},
@@ -26,12 +26,30 @@ export default {
   ],
 
   setup(props, ctx) {
+    const selectedIds = computed(() => props.selected.map(item => item._id));
+  
     // ---- Methods ----
-    function handleRowSelect({ shiftKey }, rowProps) {
-      if (props.selectable) {
-        if (shiftKey) {
-          rowProps.toggleSelect(rowProps.internalItem, rowProps.index, true);
-        }
+    function toggleSelect(rowProps) {
+      let internalSelected = props.selected;
+      if (rowProps.isSelected(rowProps.internalItem)) {
+        // remove item
+        internalSelected = internalSelected.filter(i => i._id !== rowProps.item._id);
+        rowProps.toggleSelect(rowProps.internalItem, rowProps.index, false);
+      } else {
+        // add item
+        internalSelected.push(rowProps.item);
+        rowProps.toggleSelect(rowProps.internalItem, rowProps.index, true);
+      }
+      ctx.emit('update:selected', internalSelected)
+    }
+
+    function toggleSelectAll(topProps) {
+      ctx.emit('update:selected', topProps.allSelected ? [] : topProps.items);
+    }
+  
+    function handleRowClick({ shiftKey }, rowProps) {
+      if (props.selectable && shiftKey) {
+        toggleSelect(rowProps);
       } else {
         ctx.emit('rowclick', rowProps.item);
       }
@@ -74,7 +92,10 @@ export default {
     return {
       getLocationType,
       isRootLocation,
-      handleRowSelect,
+      selectedIds,
+      handleRowClick,
+      toggleSelect,
+      toggleSelectAll,
       getRowClass,
       getItemClass,
       emitDrag,
@@ -84,8 +105,8 @@ export default {
 </script>
 
 <template>
-  <v-data-table
-    :model-value="selected"
+  <v-data-table-server
+    :model-value="selectedIds"
     :items="rows"
     :items-length="serverItemsLength"
     :loading="loading"
@@ -95,17 +116,16 @@ export default {
     item-value="_id"
     show-select
     hide-default-header
-    class="girder-data-table"
+    class="data-table-widget"
     @update:options="val => $emit('update:options', val)"
-    @update:model-value="$emit('update:selected', $event)"
   >
-    <template #top="{ allSelected, someSelected, selectAll }">
-      <div class="girder-data-table-header">
+    <template #top="topProps">
+      <div class="data-table-header">
         <v-checkbox
           v-if="selectable"
-          :model-value="allSelected"
-          :indeterminate="someSelected && !allSelected"
-          @update:model-value="selectAll"
+          :model-value="topProps.allSelected"
+          :indeterminate="topProps.someSelected && !topProps.allSelected"
+          @update:model-value="toggleSelectAll(topProps)"
           hide-details
           color="accent"
         />
@@ -120,16 +140,16 @@ export default {
         :draggable="draggable"
         :active="props.isSelected(props.internalItem)"
         :class="getRowClass(props.item)"
-        @click="handleRowSelect($event, props)"
+        @click="handleRowClick($event, props)"
         @drag="emitDrag('drag', $event, [props])"
         @dragstart="emitDrag('dragstart', $event, [props])"
         @dragend="emitDrag('dragend', $event, [props])"
       >
-        <td v-if="selectable">
+        <td v-if="selectable" style="width: 65px">
           <v-checkbox
             :model-value="props.isSelected(props.internalItem)"
             hide-details
-            @update:model-value="event => props.toggleSelect(props.internalItem, props.index, event)"
+            @update:model-value="toggleSelect(props)"
           />
         </td>
 
@@ -138,8 +158,6 @@ export default {
         >
           <span
             :class="getItemClass(props.item)"
-            class="text-container nobreak"
-            @click.stop="$emit('rowclick', props.item)"
           >
             <v-icon
               :color="props.isSelected ? 'accent' : undefined"
@@ -153,7 +171,7 @@ export default {
           </span>
         </td>
 
-        <td class="text-right nobreak">
+        <td class="text-right">
           {{ props.item.humanSize }}
         </td>
       </tr>
@@ -166,68 +184,26 @@ export default {
     <template #no-results>
       <div class="text-center">No Data Available</div>
     </template>
-  </v-data-table>
+  </v-data-table-server>
 </template>
 
-<style lang="scss">
-.girder-data-table {
-  padding-left: 12px;
-  padding-right: 12px;
+<style scoped lang="scss">
+.data-table-widget {
   cursor: default;
 
-  .select-cursor {
-    opacity: 0.8;
-
-    &:hover {
-      opacity: 1;
-      cursor: pointer;
-    }
-  }
-
-  &.v-data-table {
-    tr {
-      height: 56px;
-      .v-input--selection-controls.v-input--checkbox {
-        margin: 0 10px;
-        border-right: 1.5px solid gray;
-      }
-
-      .text-container i {
-        vertical-align: bottom;
-      }
-
-      .nobreak {
-        white-space: nowrap;
-      }
-    }
-    td {
-      padding: 0px !important;
-    }
-
-    td:first-child {
-      width: 65px
-    }
-
-    &.theme--light {
-      tr {
-        &.itemRow[active],
-        &.itemRow:hover {
-          background: #e1f5fe !important;
-        }
-      }
-    }
-  }
-
-  .v-data-table__progress .v-progress-linear {
+  :deep(.v-data-table__progress .v-progress-linear) {
     position: absolute;
   }
-}
-.girder-data-table-header {
-  height: 56px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
 
+  :deep(.data-table-header) {
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 56px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(var(--v-theme-surface-light));
+  }
+}
 
 </style>

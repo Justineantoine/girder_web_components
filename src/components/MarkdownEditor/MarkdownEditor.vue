@@ -1,11 +1,11 @@
 <script>
 import { ref, watch } from 'vue';
-import Markdown from './Markdown.vue';
+import GirderMarkdown from './Markdown.vue';
 
 export default {
   name: 'GirderMarkdownEditor',
 
-  components: { Markdown },
+  components: { GirderMarkdown },
 
   props: {
     placeholder: { default: null, type: String },
@@ -49,7 +49,7 @@ export default {
         />
       </v-tabs-window-item>
       <v-tabs-window-item value="preview" class="md-preview">
-        <markdown :text="internalText" />
+        <girder-markdown :text="internalText" />
       </v-tabs-window-item>
     </v-tabs-window>
     <v-toolbar

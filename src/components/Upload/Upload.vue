@@ -1,7 +1,7 @@
 <script>
 import { computed, inject } from 'vue';
 import Dropzone from './Dropzone.vue';
-import FileUploadList from './FileUploadList.vue';
+import FileUploadList from './UploadFileList.vue';
 
 import { usefileUploader } from '@/composables';
 import { UploadManager, formatSize } from '@/utils';
@@ -31,7 +31,7 @@ export default {
 
   setup(props, ctx) {
     // ---- Injected client ----
-    const girder = inject("girder");
+    const { rest } = inject("girder");
 
     // ---- Composable ----
     const {
@@ -47,7 +47,7 @@ export default {
       setFiles,
       start,
     } = usefileUploader({
-      girderRest: girder.rest,
+      girderRest: rest,
       onFilesChanged: (files) => ctx.emit('filesChanged', files),
       onError: (err) => ctx.emit('error', err),
       onDone: (results) => ctx.emit('done', results),
@@ -94,9 +94,7 @@ export default {
 </script>
 
 <template>
-  <v-card
-    variant="flat"
-  >
+  <v-card>
     <slot name="header">
       <v-card-title>
         <div

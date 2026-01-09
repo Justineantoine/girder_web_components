@@ -22,9 +22,11 @@ export default {
     postUpsert: { type: Function, default: () => {} },
   },
 
+  emits: ['dismiss'],
+
   setup(props, ctx) {
     // ---- Injected client ----
-    const girder = inject('girder');
+    const { rest } = inject('girder');
 
     // ---- State ----
     const folderName = ref('');
@@ -41,7 +43,7 @@ export default {
       try {
         await preUpsert();
         if (edit) {
-          await girder.rest.put(
+          await rest.put(
             `${GIRDER_FOLDER_ENDPOINT}/${location._id}`,
             stringify({
               name: folderName.value,
@@ -49,7 +51,7 @@ export default {
             }),
           );
         } else {
-          await girder.rest.post(
+          await rest.post(
             GIRDER_FOLDER_ENDPOINT,
             stringify({
               parentType: location._modelType,
@@ -73,7 +75,7 @@ export default {
     async function loadFolder(id) {
       error.value = null;
       try {
-        const { data } = await girder.rest.get(`${GIRDER_FOLDER_ENDPOINT}/${id}`);
+        const { data } = await rest.get(`${GIRDER_FOLDER_ENDPOINT}/${id}`);
         folderName.value = data.name;
         folderDescription.value = data.description;
       } catch (loadFolderError) {
@@ -112,7 +114,7 @@ export default {
 
 <template>
   <v-form @submit.prevent="upsert">
-    <v-card variant="flat">
+    <v-card class="upsert-folder">
       <v-card-item :title="edit ? 'Edit Folder' : 'Create New Folder'" >
         <v-card-subtitle>
           <girder-breadcrumb
@@ -160,3 +162,14 @@ export default {
     </v-card>
   </v-form>
 </template>
+
+<style scoped lang="scss">
+.upsert-folder {
+  :deep(.v-card-item) {
+    background-color: rgb(var(--v-theme-surface-light));
+  }
+  :deep(.v-card-text) {
+    padding: 16px;
+  }
+}
+</style>

@@ -29,7 +29,7 @@ export default {
 
   setup(props, ctx) {
     // ---- Injected client ----
-    const girder = inject('girder');
+    const { rest } = inject('girder');
     
     // ---- State ----
     const searchField = reactive({
@@ -63,7 +63,7 @@ export default {
       try {
         if (searchText.value) {
           openSearchResults.value = true;
-          const { data } = await girder.rest.get('resource/search', {
+          const { data } = await rest.get('resource/search', {
             params: searchParams.value,
           });
           results = [].concat(...internalSearchTypes.value.map((t) => data[t]));
@@ -120,7 +120,7 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex align-center">
+  <div class="data-search">
     <v-text-field
       v-model="searchText"
       :placeholder="placeholder"
@@ -221,3 +221,10 @@ export default {
     </v-btn>
   </div>
 </template>
+
+<style lang="scss">
+.data-search {
+  display: flex;
+  align-items: center;
+}
+</style>

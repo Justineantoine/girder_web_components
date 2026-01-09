@@ -13,7 +13,7 @@ export default {
 
   setup(props) {
     // ---- Injected client ----
-    const girder = inject("girder");
+    const { rest } = inject("girder");
 
     // ---- State ----
     const login = ref("");
@@ -49,7 +49,7 @@ export default {
       alerts.value.success = "";
 
       try {
-        const resp = await girder.rest.register(
+        const resp = await rest.register(
           login.value,
           email.value,
           firstName.value,
@@ -88,14 +88,13 @@ export default {
       nonEmptyRules,
       retypeMustMatchPasswordRules,
       register,
-      girder,
     };
   },
 };
 </script>
 
 <template>
-  <div>
+  <div class="register-widget">
     <v-container>
       <v-alert v-for="err in alerts.errors" :key="err" class="mt-0" dismissible="dismissible"
         type="error">

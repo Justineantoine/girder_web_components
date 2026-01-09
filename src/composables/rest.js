@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { reactive, toRefs } from 'vue'
 import RestClient from '@/utils/restClient'
 
 
@@ -24,5 +24,5 @@ export default function useGirderClient(options = {}) {
         state.user = user
         state.token = restClient.token
     })
-    return { rest: restClient, state }
+    return { rest: restClient, ...toRefs(state) }
 }

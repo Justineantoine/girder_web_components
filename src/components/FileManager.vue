@@ -1,11 +1,11 @@
 <script>
-import { ref, computed, inject, nextTick, reactive } from 'vue';
+import { ref, computed, inject, nextTick, reactive, useTemplateRef } from 'vue';
 
 import GirderUpload from './Upload';
 import GirderUpsertFolder from './UpsertFolder.vue';
 import GirderDataBrowser from './DataBrowser';
 import GirderBreadcrumb from './Breadcrumb.vue';
-// import GirderAccessControl from '../AccessControl.vue';
+import GirderAccessControl from './AccessControl.vue';
 
 import {
   getLocationType,
@@ -17,7 +17,7 @@ export default {
   name: 'GirderFileManager',
 
   components: {
-    // GirderAccessControl,
+    GirderAccessControl,
     GirderBreadcrumb,
     GirderUpload,
     GirderUpsertFolder,
@@ -58,9 +58,10 @@ export default {
 
   setup(props, ctx) {
     // ---- Injected client ----
-    const girder = inject('girder');
+    const { user } = inject('girder');
 
     // ---- State ----
+    const dataBrowser = useTemplateRef('data-browser');
     const uploaderDialog = ref(false);
     const newFolderDialog = ref(false);
     const lazyLocation = ref(null);
@@ -75,10 +76,12 @@ export default {
     const showAccessControlDialog = ref(false);
     const hasAccessPermission = ref(false);
 
-    const girderBrowser = ref(null);
+    const options = reactive({
+      itemsPerPage: props.itemsPerPage,
+      page: 1,
+    });
 
     // ---- State ----
-    const user = computed(() => girder.state.user);
     const internalLocation = computed({
       get() {
         if (props.location) return props.location;
@@ -120,7 +123,7 @@ export default {
 
     // ---- Methods ----
     function refresh() {
-      girderBrowser.value?.refresh();
+      dataBrowser.value?.refresh();
     }
 
     async function postUploadInternal() {
@@ -161,18 +164,18 @@ export default {
     }
 
     return {
-      user,
-      girderBrowser,
-      internalLocation,
-      uploadDest,
-      shouldShowUpload,
-      shouldShowNewFolder,
-      uploaderDialog,
-      newFolderDialog,
-      collectionAndFolderMenu,
       actOnItem,
-      showAccessControlDialog,
+      collectionAndFolderMenu,
       hasAccessPermission,
+      internalLocation,
+      newFolderDialog,
+      options,
+      shouldShowNewFolder,
+      shouldShowUpload,
+      showAccessControlDialog,
+      uploadDest,
+      uploaderDialog,
+      user,
       refresh,
       postUploadInternal,
       postUpsertInternal,
@@ -185,14 +188,14 @@ export default {
 </script>
 
 <template>
-  <v-card variant="flat">
+  <v-card class="file-manager">
     <girder-data-browser
-      ref="girderBrowser"
+      ref="data-browser"
       :location="location"
       :selectable="selectable"
       :draggable="dragEnabled"
       :root-location-disabled="rootLocationDisabled"
-      :items-per-page="itemsPerPage"
+      :options="options"
       :items-per-page-options="itemsPerPageOptions"
       :selected="selected"
       @drag="$emit('drag', $event)"
@@ -213,14 +216,14 @@ export default {
       </template>
       <template #headerwidget>
         <slot name="headerwidget"></slot>
-        <v-btn v-if="shouldShowNewFolder" v-tooltip="{text: 'New folder', location: 'bottom'}" flat icon>
+        <v-btn v-if="shouldShowNewFolder" v-tooltip="{text: 'New folder', location: 'bottom'}" icon variant="text">
           <v-icon color="primary" icon="$folderNew"/>
-          <v-dialog  v-model="newFolderDialog" activator="parent" max-width="800px">
+          <v-dialog v-model="newFolderDialog" activator="parent" max-width="800px">
             <girder-upsert-folder :key="internalLocation._id" :location="internalLocation" :pre-upsert="preUpsert"
             :post-upsert="postUpsertInternal" @dismiss="newFolderDialog = false" />
           </v-dialog>
         </v-btn>
-        <v-btn v-if="shouldShowUpload" v-tooltip="{text: 'Upload files', location: 'bottom'}" flat icon>
+        <v-btn v-if="shouldShowUpload" v-tooltip="{text: 'Upload files', location: 'bottom'}" icon variant="text">
           <v-icon color="primary" icon="$fileNew"/>
           <v-dialog v-model="uploaderDialog" activator="parent" max-width="800px">
             <girder-upload :dest="uploadDest" :pre-upload="preUpload" :post-upload="postUploadInternal"

@@ -2,33 +2,28 @@
   <v-list
     v-if="rows.length"
     dense="dense"
+    class="px-4"
   >
-    <v-subheader class="subtitle-1 font-weight-bold pl-4">
+    <div class="text-subtitle-1 font-weight-bold">
       {{ title }}
-    </v-subheader>
-    <template v-for="(val, i) in rows">
+    </div>
+    <template v-for="(val, i) in rows" :key="`${i}-li`">
       <v-list-item
-        :key="`${i}-li`"
-        class="allow-select"
+        class="px-1"
         :href="val.href"
         :target="val.target"
-        v-on="clickable ? {click: () => $emit('click', val)} : {}"
+        @click="clickable ? $emit('click', val) : {}"
       >
         <slot
           :datum="val"
           name="row"
         >
-          <v-list-item-content>
-            <div class="body-2 no-overflow">
-              {{ val }}
-            </div>
-          </v-list-item-content>
+          <v-list-item-title>{{ val }}</v-list-item-title>
         </slot>
       </v-list-item>
       <v-divider
-        v-if="i < rows.length - 1"
+        v-if="!noDividers && i < rows.length - 1"
         :key="`${i}-divider`"
-        class="mx-3"
       />
     </template>
   </v-list>
@@ -36,25 +31,13 @@
 
 <script>
 export default {
+  name: 'GirderDetailList',
+
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    rows: {
-      type: Array,
-      required: true,
-    },
-    clickable: {
-      type: Boolean,
-      default: false,
-    },
+    title: { type: String, required: false },
+    rows: { type: Array, required: true },
+    clickable: { type: Boolean, default: false },
+    noDividers: { type: Boolean, default: false }
   },
 };
 </script>
-
-<style scoped>
-.allow-select {
-  user-select: auto;
-}
-</style>

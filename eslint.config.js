@@ -6,6 +6,7 @@ export default [
 //     rules: {
 //       'vue/multi-word-component-names': 'off',
 //       'no-param-reassign': ['error', { props: false }],
+//       'no-restricted-imports': ['error', { 'patterns': ['@/*'] }],
 //     },
 //   },
 ]

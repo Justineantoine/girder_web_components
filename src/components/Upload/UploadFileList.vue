@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { progressPercent, formatSize } from '@/utils';
 
 export default {
-  name: "FileUploadList",
+  name: "GirderUploadFileList",
 
   props: {
     files: { type: Array, required: true },
