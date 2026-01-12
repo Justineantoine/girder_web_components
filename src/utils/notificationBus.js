@@ -65,7 +65,7 @@ export default class NotificationBus {
   }
 
   connect() {
-    if (this.connected) return;
+    if (this.connected) {return;}
 
     if (this.useEventSource && this.EventSource) {
       const since = Math.ceil(+this.since / 1000);
@@ -96,10 +96,10 @@ export default class NotificationBus {
       try {
         const { data } = await this.$rest.get(`/notification?since=${this.since.toISOString()}`);
         data.forEach(this._emitNotification.bind(this));
-        if (data.length) nextInterval = min;
-        else if (interval === 0) nextInterval = max;
-        else nextInterval = Math.min(interval + step, max);
-      } catch {
+        if (data.length) {nextInterval = min;}
+        else if (interval === 0) {nextInterval = max;}
+        else {nextInterval = Math.min(interval + step, max);}
+      } catch (_err) {
         nextInterval = max;
       } finally {
         this._poll(nextInterval);

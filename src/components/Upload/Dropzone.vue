@@ -11,7 +11,7 @@ export default {
 
   emits: ['change'],
 
-  setup(props, ctx) {
+  setup(ctx) {
     const dropzoneClass = ref(null);
     const files = ref([]);
 
@@ -31,9 +31,17 @@ export default {
 </script>
 
 <template>
-  <div class="dropzone-wrapper" :class="dropzoneClass" @dragenter="dropzoneClass = 'animate'"
-    @dragleave="dropzoneClass = null" @drop="dropzoneClass = null">
-    <v-row no-gutters class="flex-column align-center justify-center fill-height dropzone-message">
+  <div
+    class="dropzone-wrapper"
+    :class="dropzoneClass"
+    @dragenter="dropzoneClass = 'animate'"
+    @dragleave="dropzoneClass = null"
+    @drop="dropzoneClass = null"
+  >
+    <v-row
+      no-gutters
+      class="flex-column align-center justify-center fill-height dropzone-message"
+    >
       <v-icon size="50">
         $fileUpload
       </v-icon>
@@ -41,21 +49,30 @@ export default {
         {{ message }}
       </div>
     </v-row>
-    <!-- Vuetify file input -->
-    <v-file-input v-model="files" class="file-input" :multiple="multiple" :accept="accept" hide-details
-      density="compact" variant="plain" @update:model-value="onFileChange" />
+    <v-file-input
+      v-model="files"
+      class="file-input"
+      :multiple="multiple"
+      :accept="accept"
+      hide-details
+      density="compact"
+      variant="plain"
+      @update:model-value="onFileChange"
+    />
   </div>
 </template>
 
 <style lang="scss" scoped>
-$img: linear-gradient(-45deg,
-    rgba(160, 160, 160, 0.12) 25%,
-    transparent 25%,
-    transparent 50%,
-    rgba(160, 160, 160, 0.12) 50%,
-    rgba(160, 160, 160, 0.12) 75%,
-    transparent 75%,
-    transparent);
+$img: linear-gradient(
+  -45deg,
+  rgb(160 160 160 / 0.12) 25%,
+  transparent 25%,
+  transparent 50%,
+  rgb(160 160 160 / 0.12) 50%,
+  rgb(160 160 160 / 0.12) 75%,
+  transparent 75%,
+  transparent
+);
 
 .dropzone-wrapper {
   position: relative;
@@ -81,10 +98,7 @@ $img: linear-gradient(-45deg,
 
   .file-input {
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0;
     height: 100%;
     width: 100%;
     opacity: 0;

@@ -43,7 +43,7 @@ export default function usefileUploader({ girderRest, onFilesChanged, onError, o
 
   async function uploadFile({ file, hookResult, dest, uploadCls }) {
     let chain = Promise.resolve();
-    if (file.status === 'done') return chain.then(() => file.result);
+    if (file.status === 'done') {return chain.then(() => file.result);}
 
     const progress = (event) => { file.progress = event; };
     file.status = 'uploading';

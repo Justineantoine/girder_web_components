@@ -6,24 +6,6 @@ export default class S3UploadManager {
     Object.assign(this, base, { etags: {}, offset: 0, partNumber: 1 });
   }
 
-  _finalizeMultipartXml() {
-    const doc = document.implementation.createDocument(null, null, null);
-    const root = doc.createElement('CompleteMultipartUpload');
-
-    Object.entries(this.etags).forEach(([part, etag]) => {
-      const partEl = doc.createElement('Part');
-      const partNumberEl = doc.createElement('PartNumber');
-      const etagEl = doc.createElement('ETag');
-
-      partNumberEl.appendChild(doc.createTextNode(part));
-      etagEl.appendChild(doc.createTextNode(etag));
-      partEl.appendChild(partNumberEl);
-      partEl.appendChild(etagEl);
-      root.appendChild(partEl);
-    });
-    return root.outerHTML;
-  }
-
   async complete() {
     this.progress({
       indeterminate: true,
@@ -52,7 +34,7 @@ export default class S3UploadManager {
 
     while (this.offset < this.file.size) {
       const blob = this.file.slice(this.offset, this.offset + this.upload.s3.chunkLength);
-      // eslint-disable-next-line no-await-in-loop
+       
       const { method, url } = (await this.$rest.post('file/chunk', stringify({
         chunk: JSON.stringify({
           contentLength: blob.size,
@@ -63,7 +45,7 @@ export default class S3UploadManager {
         uploadId: this.upload._id,
       }))).data.s3.request;
 
-      // eslint-disable-next-line no-await-in-loop
+       
       const resp = await axios.request({
         data: blob, method, url, onUploadProgress,
       });
@@ -72,10 +54,6 @@ export default class S3UploadManager {
       this.offset += blob.size;
     }
     const resp = await this.complete();
-    const { headers, method, url } = resp.data.s3FinalizeRequest;
-    await axios.request({
-      data: this._finalizeMultipartXml(), headers, method, url,
-    });
     return resp.data;
   }
 

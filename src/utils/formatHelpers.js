@@ -2,7 +2,7 @@
  * Converts file progress properties to percentage
  */
 export function progressPercent({ current = 0, total = 0 } = {}) {
-  if (!total) return 0;
+  if (!total) {return 0;}
   return Math.round((current / total) * 100);
 }
 
@@ -19,11 +19,11 @@ export function formatDate(datestring) {
  */
 export function formatSize(size, { base = 1024, unit = 'B' } = {}) {
   const num = Number(size);
-  if (!Number.isFinite(num)) return '0 B';
-  if (num < base) return `${num} ${unit}`;
+  if (!Number.isFinite(num)) {return '0 B';}
+  if (num < base) {return `${num} ${unit}`;}
   let i;
   let val = num;
-  for (i = 0; val >= base && i < 4; i++) val /= base;
+  for (i = 0; val >= base && i < 4; i++) {val /= base;}
   return `${val.toFixed(2)} ${['','K','M','G','T'][i]}${unit}`;
 }
 

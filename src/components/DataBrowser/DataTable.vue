@@ -125,12 +125,16 @@ export default {
           v-if="selectable"
           :model-value="topProps.allSelected"
           :indeterminate="topProps.someSelected && !topProps.allSelected"
-          @update:model-value="toggleSelectAll(topProps)"
           hide-details
           color="accent"
+          @update:model-value="toggleSelectAll(topProps)"
         />
-        <v-divider v-if="selectable" class="ma-3" vertical/>
-        <slot name="header"></slot>
+        <v-divider
+          v-if="selectable"
+          class="ma-3"
+          vertical
+        />
+        <slot name="header" />
       </div>
     </template>
 
@@ -145,7 +149,10 @@ export default {
         @dragstart="emitDrag('dragstart', $event, [props])"
         @dragend="emitDrag('dragend', $event, [props])"
       >
-        <td v-if="selectable" style="width: 65px">
+        <td
+          v-if="selectable"
+          style="width: 65px"
+        >
           <v-checkbox
             :model-value="props.isSelected(props.internalItem)"
             hide-details
@@ -165,7 +172,10 @@ export default {
               :icon="props.item.icon"
             />
 
-            <slot name="row" v-bind="props">
+            <slot
+              name="row"
+              v-bind="props"
+            >
               {{ props.item.name }}
             </slot>
           </span>
@@ -178,11 +188,15 @@ export default {
     </template>
 
     <template #no-data>
-      <div class="text-center">No Data Available</div>
+      <div class="text-center">
+        No Data Available
+      </div>
     </template>
 
     <template #no-results>
-      <div class="text-center">No Data Available</div>
+      <div class="text-center">
+        No Data Available
+      </div>
     </template>
   </v-data-table-server>
 </template>

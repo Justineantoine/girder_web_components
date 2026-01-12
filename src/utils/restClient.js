@@ -37,15 +37,17 @@ export default class RestClient {
     useGirderAuthorizationHeader = false,
     setLocalCookie = true,
   } = {}) {
-    this.apiRoot = apiRoot
-    this.token = token
-    this.user = null
-    this.setLocalCookie = setLocalCookie
-    this.authenticateWithCredentials = authenticateWithCredentials
-    this.useGirderAuthorizationHeader = useGirderAuthorizationHeader
+    this.apiRoot = apiRoot;
+    this.token = token;
+    this.user = null;
 
-    this._axios = axios.create()
-    this.emitter = mitt()
+    
+    this.setLocalCookie = setLocalCookie;
+    this.authenticateWithCredentials = authenticateWithCredentials;
+    this.useGirderAuthorizationHeader = useGirderAuthorizationHeader;
+
+    this._axios = axios.create();
+    this.emitter = mitt();
 
     this._axios.interceptors.request.use((config) => ({
       ...config,
@@ -54,92 +56,96 @@ export default class RestClient {
         [GirderToken]: this.token,
         ...config.headers,
       },
-    }))
+    }));
 
-    this.get = this._axios.get.bind(this._axios);
-    this.post = this._axios.post.bind(this._axios);
-    this.put = this._axios.put.bind(this._axios);
-    this.patch = this._axios.patch.bind(this._axios);
-    this.delete = this._axios.delete.bind(this._axios);
+    ['get', 'post', 'put', 'patch', 'delete'].forEach(
+      (m) => (this[m] = this._axios[m].bind(this._axios))
+    );
   }
 
   on(event, handler) {
-    this.emitter.on(event, handler)
+    this.emitter.on(event, handler);
   }
 
   off(event, handler) {
-    this.emitter.off(event, handler)
+    this.emitter.off(event, handler);
   }
 
   emit(event, payload) {
-    this.emitter.emit(event, payload)
+    this.emitter.emit(event, payload);
+  }
+
+  async setApiRoot(apiRoot) {
+    this.logout();
+    this.apiRoot = apiRoot;
+    this.emit('setApiRoot', this.apiRoot);
   }
 
   async login(username, password, otp = null) {
     try {
-      await this.logout()
+      await this.logout();
     } catch (err) {
       // noop
     }
 
-    let auth
-    const headers = { [GirderToken]: null }
+    let auth;
+    const headers = { [GirderToken]: null };
 
     if (this.useGirderAuthorizationHeader) {
-      headers[GirderAuthorization] = `Basic ${window.btoa(`${username}:${password}`)}`
+      headers[GirderAuthorization] = `Basic ${window.btoa(`${username}:${password}`)}`;
     } else {
-      auth = { username, password }
+      auth = { username, password };
     }
-    if (otp) headers[GirderOtp] = otp
+    if (otp) headers[GirderOtp] = otp;
 
     const resp = await this.get('user/authentication', {
       headers,
       auth,
       withCredentials: this.authenticateWithCredentials,
-    })
+    });
 
-    this.token = resp.data.authToken.token
-    this.user = resp.data.user
+    this.token = resp.data.authToken.token;
+    this.user = resp.data.user;
 
-    if (this.setLocalCookie) setCookieFromAuth(resp.data.authToken)
-    this.emit('login', this.user)
-    return resp
+    if (this.setLocalCookie) setCookieFromAuth(resp.data.authToken);
+    this.emit('login', this.user);
+    return resp;
   }
 
   async logout() {
-    if (!this.token) return
+    if (!this.token) return;
     try {
-      await this.delete('user/authentication')
+      await this.delete('user/authentication');
     } catch (err) {
-      if (!err.response || err.response.status !== 401) throw err
+      if (!err.response || err.response.status !== 401) throw err;
     } finally {
-      this.token = null
-      this.user = null
-      cookies.remove('girderToken')
-      this.emit('logout')
+      this.token = null;
+      this.user = null;
+      cookies.remove('girderToken');
+      this.emit('logout');
     }
   }
 
   async fetchUser() {
-    const resp = await this.get('user/me')
-    this.user = resp.data
-    if (this.user === null) this.token = null
-    return this.user
+    const resp = await this.get('user/me');
+    this.user = resp.data;
+    if (this.user === null) this.token = null;
+    return this.user;
   }
 
   async register(login, email, firstName, lastName, password, admin = false) {
     const resp = await this.post(
       'user',
       stringify({ login, email, firstName, lastName, password, admin })
-    )
+    );
 
-    if (!resp.data.authToken) return resp
+    if (!resp.data.authToken) return resp;
 
-    this.token = resp.data.authToken.token
-    this.user = resp.data
-    if (this.setLocalCookie) setCookieFromAuth(resp.data.authToken)
-    this.emit('register', this.user)
-    this.emit('login', this.user)
-    return resp
+    this.token = resp.data.authToken.token;
+    this.user = resp.data;
+    if (this.setLocalCookie) setCookieFromAuth(resp.data.authToken);
+    this.emit('register', this.user);
+    this.emit('login', this.user);
+    return resp;
   }
 }

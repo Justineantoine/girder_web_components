@@ -2,13 +2,12 @@
 import { ref, inject, computed, useTemplateRef } from 'vue'
 import { useTheme } from 'vuetify'
 
-import Headline from './Headline.vue';
-import NavLink from './NavLink.vue';
+import Headline from './ComponentHeadline.vue';
+import NavLink from './ComponentNavLink.vue';
 import { hasAdminAccess } from '@';
 
 // ---- Injected client ----
 const { rest, user, token } = inject('girder');
-// const { user, token } = girder;
 
 // ---- State ----
 
@@ -161,11 +160,11 @@ function postUpload() {
               v-model="currentTheme"
               value="dark"
               false-value="light"
-              @click="theme.toggle()"
               class="mx-4 my-0"
               hide-details="hide-details"
               label="Dark theme"
               inset
+              @click="theme.toggle()"
             />
           </div>
           <div class="text-subtitle-1 mb-1">
@@ -179,13 +178,13 @@ function postUpload() {
             :key="badge"
             :src="badge"
             class="pr-3"
-          />
+          >
           <div class="text-subtitle-1">
             This demo integrates with
             <a href="https://data.kitware.com">data.kitware.com</a>
           </div>
 
-          <a id="auth"></a>
+          <a id="auth" />
           <headline
             title="girder-authentication"
             link="src/components/Authentication/Authentication.vue"
@@ -208,13 +207,13 @@ function postUpload() {
             />
           </v-row>
           <girder-authentication
-              v-if="loggedOut"
-              :key="token"
-              :force-otp="false"
-              :register="authRegister"
-              :oauth="authOauth"
-              :forgot-password-url="forgotPasswordUrl"
-            />
+            v-if="loggedOut"
+            :key="token"
+            :force-otp="false"
+            :register="authRegister"
+            :oauth="authOauth"
+            :forgot-password-url="forgotPasswordUrl"
+          />
           <v-btn
             v-else
             color="primary"
@@ -224,7 +223,7 @@ function postUpload() {
             Log Out
           </v-btn>
 
-          <a id="upload"></a>
+          <a id="upload" />
           <headline
             title="girder-upload"
             link="src/components/Upload/Upload.vue"
@@ -234,7 +233,7 @@ function postUpload() {
             :dest="uploadDest"
             :post-upload="postUpload"
           />
-          <a id="search"></a>
+          <a id="search" />
           <headline
             title="girder-search"
             link="src/components/Search.vue"
@@ -251,7 +250,7 @@ function postUpload() {
               md="6"
               sm="12"
             >
-              <a id="file-manager"></a>
+              <a id="file-manager" />
               <headline
                 title="girder-file-manager"
                 link="src/components/FileManager.vue"
@@ -265,7 +264,7 @@ function postUpload() {
               md="6"
               sm="12"
             >
-              <a id="data-details"></a>
+              <a id="data-details" />
               <headline
                 title="girder-data-details"
                 link="src/components/DataDetails/DataDetails.vue"
@@ -332,19 +331,19 @@ function postUpload() {
               </girder-file-manager>
               <v-card
                 v-if="dragEnabled"
+                title="Drop Zone"
+                class="mt-3"
                 @dragenter.prevent=""
                 @dragover.prevent=""
                 @drop="drop"
-                title="Drop Zone"
-                class="mt-3"
               >
                 <v-card-text>
                   <p v-if="!(dropped.length)">
                     Drag a row here to see results
                   </p>
                   <v-list-item
-                    v-else
                     v-for="{ item } in dropped"
+                    v-else
                     :key="item._id"
                     :title="item.name"
                     :subtitle="`${item._modelType} -- ${item.size}`"
@@ -360,22 +359,28 @@ function postUpload() {
             >
               <girder-data-details
                 :value="detailsList"
+                :new-folder-enabled="newFolderEnabled"
                 @action="handleAction"
-                :newFolderEnabled="newFolderEnabled"
               />
             </v-col>
           </v-row>
 
-          <a id="access-control"></a>
+          <a id="access-control" />
           <headline
             title="girder-access-control"
             link="src/components/AccessControl.vue"
             description="access controls for folders and items"
           />
-          <girder-access-control v-if="hasAdminAccess(uploadDest)" :model="uploadDest" />
-          <v-card v-else text="Must have Admin access to folder or collection" />
+          <girder-access-control
+            v-if="hasAdminAccess(uploadDest)"
+            :model="uploadDest"
+          />
+          <v-card
+            v-else
+            text="Must have Admin access to folder or collection"
+          />
 
-          <a id="upsert-folder"></a>
+          <a id="upsert-folder" />
           <headline
             title="girder-upsert-folder"
             link="src/components/UpsertFolder.vue"
@@ -394,7 +399,7 @@ function postUpload() {
             :edit="upsertEdit"
           />
           
-          <a id="breadcrumb"></a>
+          <a id="breadcrumb" />
           <headline
             title="girder-breadcrumb"
             link="src/components/Breadcrumb.vue"

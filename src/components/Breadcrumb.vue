@@ -110,31 +110,48 @@ export default {
     <v-icon
       v-if="user && !readonly"
       :disabled="location._id === user._id"
-      @click="$emit('crumbclick', user)"
       class="mdi-24px mr-3"
       color="primary"
       icon="$userHome"
+      @click="$emit('crumbclick', user)"
     />
     <v-breadcrumbs
       :items="breadcrumb"
       class="font-weight-bold pa-0"
     >
-      <span
-        slot="divider"
-        :disabled="readonly"
-        class="subheading font-weight-bold"
-      >/</span>
+      <template #divider>
+        <span
+        
+          :disabled="readonly"
+          class="subheading font-weight-bold"
+        >/</span>
+      </template>
       <template #item="{ item }">
         <v-breadcrumbs-item
           :disabled="(readonly || breadcrumb.indexOf(item) == breadcrumb.length-1)"
           tag="a"
-          @click="$emit('crumbclick', item)"
           style="cursor: pointer;"
+          @click="$emit('crumbclick', item)"
         >
-          <span v-if="['folder', 'user', 'collection'].indexOf(item.type) !== -1" class="accent--text">{{ item.name }}</span>
-          <v-icon v-else-if="item.type==='users'" class="mdi-18px accent--text" icon="$user" />
-          <v-icon v-else-if="item.type==='collections'" class="mdi-18px accent--text" icon="$collection" />
-          <v-icon v-else-if="item.type==='root'" class="mdi-18px accent--text" icon="$globe" />
+          <span
+            v-if="['folder', 'user', 'collection'].indexOf(item.type) !== -1"
+            class="accent--text"
+          >{{ item.name }}</span>
+          <v-icon
+            v-else-if="item.type==='users'"
+            class="mdi-18px accent--text"
+            icon="$user"
+          />
+          <v-icon
+            v-else-if="item.type==='collections'"
+            class="mdi-18px accent--text"
+            icon="$collection"
+          />
+          <v-icon
+            v-else-if="item.type==='root'"
+            class="mdi-18px accent--text"
+            icon="$globe"
+          />
           <span v-else>{{ item }}</span>
         </v-breadcrumbs-item>
       </template>

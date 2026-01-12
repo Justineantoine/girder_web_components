@@ -42,7 +42,7 @@ export function createLocationValidator(allowRoot) {
     }
     if (isRootLocation(location)) {
       return allowRoot;
-    // eslint-disable-next-line no-else-return
+     
     } else {
       return !!location._id;
     }

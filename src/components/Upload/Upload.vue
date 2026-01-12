@@ -138,9 +138,15 @@ export default {
         />
       </slot>
     </v-card-text>
-    <v-card-actions v-if="files.length && !uploading" class="pa-4">
-      <div v-if="!errorMessage" class="d-flex flex-grow-1">
-        <v-spacer/>
+    <v-card-actions
+      v-if="files.length && !uploading"
+      class="pa-4"
+    >
+      <div
+        v-if="!errorMessage"
+        class="d-flex flex-grow-1"
+      >
+        <v-spacer />
         <v-btn
           text="Clear all"
           rounded
@@ -150,8 +156,8 @@ export default {
           v-if="!hideStartButton"
           color="primary"
           rounded
-          @click="startUpload"
           :text="startButtonText"
+          @click="startUpload"
         />
       </div>
       <v-alert
@@ -160,8 +166,8 @@ export default {
         title="Error"
         :text="errorMessage"
       >
-        <template v-slot:append>
-          <v-spacer/>
+        <template #append>
+          <v-spacer />
           <v-btn
             text="Resume Upload"
             @click="startUpload"
@@ -171,7 +177,6 @@ export default {
             @click="reset"
           />
         </template>
-        
       </v-alert>
     </v-card-actions>
   </v-card>

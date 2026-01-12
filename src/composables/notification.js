@@ -7,26 +7,26 @@ export default function useNotificationBus(restClient, options = {}) {
     lastNotification: null,
     errors: [],
     connected: false,
-  })
+  });
 
-  const bus = new NotificationBus(restClient, options)
+  const bus = new NotificationBus(restClient, options);
 
   // ---- Wire events from bus → reactive mirror ----
   bus.on('start', () => {
-    state.connected = true
-  })
+    state.connected = true;
+  });
 
   bus.on('stop', () => {
-    state.connected = false
-  })
+    state.connected = false;
+  });
 
   bus.on('message', (note) => {
-    state.lastNotification = note
-  })
+    state.lastNotification = note;
+  });
 
   bus.on('error', (err) => {
-    state.errors.push(err)
-  })
+    state.errors.push(err);
+  });
 
-  return { bus, state }
+  return { bus, state };
 }

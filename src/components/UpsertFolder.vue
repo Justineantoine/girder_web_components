@@ -22,7 +22,7 @@ export default {
     postUpsert: { type: Function, default: () => {} },
   },
 
-  emits: ['dismiss'],
+  emits: ['dismiss', 'done', 'error'],
 
   setup(props, ctx) {
     // ---- Injected client ----
@@ -115,7 +115,7 @@ export default {
 <template>
   <v-form @submit.prevent="upsert">
     <v-card class="upsert-folder">
-      <v-card-item :title="edit ? 'Edit Folder' : 'Create New Folder'" >
+      <v-card-item :title="edit ? 'Edit Folder' : 'Create New Folder'">
         <v-card-subtitle>
           <girder-breadcrumb
             v-bind="{ location, append }"
@@ -168,6 +168,7 @@ export default {
   :deep(.v-card-item) {
     background-color: rgb(var(--v-theme-surface-light));
   }
+
   :deep(.v-card-text) {
     padding: 16px;
   }

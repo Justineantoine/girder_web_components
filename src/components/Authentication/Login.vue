@@ -15,7 +15,9 @@ export default {
     oauthProviders: { type: Array, default: () => [] }
   },
 
-  setup(props) {
+  emits: ['forgotpassword'],
+
+  setup() {
     // ---- Constants ----
     const OTP_MAGIC_SUBSTRING =
       "authentication must include a one-time password";
@@ -63,7 +65,7 @@ export default {
 
     const login = async () => {
       const valid = await loginForm.value.validate();
-      if (!valid) return;
+      if (!valid) {return;}
 
       alerts.value.error = "";
       alerts.value.success = "";
@@ -138,8 +140,8 @@ export default {
           v-if="requiresEmailVerification"
           size="small"
           variant="outlined"
-          @click="sendVerification"
           text="Resend verification email"
+          @click="sendVerification"
         />
       </v-alert>
       <v-alert
@@ -152,19 +154,54 @@ export default {
       />
 
       <!-- Login Form -->
-      <v-form ref="loginForm" @submit.prevent="login">
-        <v-text-field v-if="!otpFormVisible || forceOtp" v-model="username" :rules="nonEmptyRules" variant="solo-filled"
-          flat label="Username or e-mail" autocomplete="username" prepend-inner-icon="mdi-account" />
+      <v-form
+        ref="loginForm"
+        @submit.prevent="login"
+      >
+        <v-text-field
+          v-if="!otpFormVisible || forceOtp"
+          v-model="username"
+          :rules="nonEmptyRules"
+          variant="solo-filled"
+          flat
+          label="Username or e-mail"
+          autocomplete="username"
+          prepend-inner-icon="mdi-account"
+        />
 
-        <v-text-field v-if="!otpFormVisible || forceOtp" v-model="password" :rules="nonEmptyRules" variant="solo-filled"
-          flat label="Password" type="password" autocomplete="current-password" prepend-inner-icon="mdi-lock" />
+        <v-text-field
+          v-if="!otpFormVisible || forceOtp"
+          v-model="password"
+          :rules="nonEmptyRules"
+          variant="solo-filled"
+          flat
+          label="Password"
+          type="password"
+          autocomplete="current-password"
+          prepend-inner-icon="mdi-lock"
+        />
 
-        <v-text-field v-if="otpFormVisible || forceOtp" v-model="otp" :rules="otpRules" variant="solo-filled"
-          type="text" label="Authentication code" prepend-inner-icon="mdi-shield-key" />
+        <v-text-field
+          v-if="otpFormVisible || forceOtp"
+          v-model="otp"
+          :rules="otpRules"
+          variant="solo-filled"
+          type="text"
+          label="Authentication code"
+          prepend-inner-icon="mdi-shield-key"
+        />
 
         <div class="d-flex">
-          <v-btn :loading="inProgress" :disabled="inProgress" type="submit" color="primary" rounded
-            prepend-icon="$login" :text="otpFormVisible ? 'Verify code' : 'Login'" variant="flat" />
+          <v-btn
+            :loading="inProgress"
+            :disabled="inProgress"
+            type="submit"
+            color="primary"
+            rounded
+            prepend-icon="$login"
+            :text="otpFormVisible ? 'Verify code' : 'Login'"
+            variant="flat"
+          />
           <v-spacer />
           <template v-if="!hideForgotPassword">
             <v-spacer />
@@ -173,8 +210,8 @@ export default {
               :href="forgotPasswordUrl"
               variant="text"
               color="primary"
-              @click="$emit('forgotpassword')"
               text="Forgot password?"
+              @click="$emit('forgotpassword')"
             />
           </template>
         </div>

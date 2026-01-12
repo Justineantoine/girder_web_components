@@ -30,7 +30,7 @@ export default class UploadBase {
    * or rejected with an ``Error`` that has ``config``, ``request``, and ``response`` properties.
    * @abstract
    */
-  async start() { // eslint-disable-line class-methods-use-this
+  async start() {  
     throw new Error('not implemented');
   }
 
@@ -46,14 +46,14 @@ export default class UploadBase {
    * This callback is called before the upload is started. This callback is asynchronous.
    * If it returns a Promise, the caller will await its resolution before continuing.
    */
-  // eslint-disable-next-line class-methods-use-this, no-unused-vars
+   
   beforeUpload() {}
 
   /**
    * This callback is called after the upload is completed. This callback is asynchronous.
    * If it returns a Promise, the caller will await its resolution before continuing.
    */
-  // eslint-disable-next-line class-methods-use-this, no-unused-vars
+   
   afterUpload() {}
 
   /**
@@ -61,6 +61,6 @@ export default class UploadBase {
    * If it returns a Promise, the caller will await its resolution before continuing.
    * @param {Exception} error The exception object.
    */
-  // eslint-disable-next-line class-methods-use-this, no-unused-vars
-  onError(error) {}
+   
+  onError(_err) {}
 }

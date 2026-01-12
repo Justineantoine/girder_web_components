@@ -49,7 +49,7 @@ export default {
       try {
         const { data } = await rest.get(`${model._modelType}/${model._id}/access`);
         access.value = data;
-      } catch (ex) {
+      } catch (_err) {
         access.value = null;
       }
       loading.value = false;
@@ -115,7 +115,7 @@ export default {
     // ---- Watchers ----
     watch(
       () => props.model,
-      (val) => {if (val) getAccessControlData()},
+      (val) => {if (val) {getAccessControlData()}},
       { immediate: true, deep: false }
     );
     watch(
@@ -162,36 +162,39 @@ export default {
         v-if="groupsAndUsers.length"
         max-height="400px"
       >
-          <v-list-item
-            v-for="resource in groupsAndUsers"
-            :key="resource.id"
-            :title="resource.name"
-            :subtitle="resource.login || resource.description"
-          >
-            <template #prepend>
-              <v-icon :icon="resource.login ? '$user' : '$group'"/>
-            </template>
-            <template #append>
-              <v-select
-                  v-model="resource.level"
-                  :items="permissions"
-                  :item-props="true"
-                  class="level"
-                  variant="solo-filled"
-                  flat
-                  hide-details
-                  density="compact"
-                  width="200px"
-                />
-                <v-btn
-                  v-tooltip="'Delete'"
-                  icon="$delete"
-                  @click="remove(resource)"
-                  variant="text"
-                />
-            </template>
-          </v-list-item>
-          <v-list-item v-if="!groupsAndUsers.length && !loading" title="No access granted yet" />
+        <v-list-item
+          v-for="resource in groupsAndUsers"
+          :key="resource.id"
+          :title="resource.name"
+          :subtitle="resource.login || resource.description"
+        >
+          <template #prepend>
+            <v-icon :icon="resource.login ? '$user' : '$group'" />
+          </template>
+          <template #append>
+            <v-select
+              v-model="resource.level"
+              :items="permissions"
+              :item-props="true"
+              class="level"
+              variant="solo-filled"
+              flat
+              hide-details
+              density="compact"
+              width="200px"
+            />
+            <v-btn
+              v-tooltip="'Delete'"
+              icon="$delete"
+              variant="text"
+              @click="remove(resource)"
+            />
+          </template>
+        </v-list-item>
+        <v-list-item
+          v-if="!groupsAndUsers.length && !loading"
+          title="No access granted yet"
+        />
       </v-list>
       <div class="d-flex pb-2">
         <v-switch
@@ -216,7 +219,7 @@ export default {
           class="ma-3"
           prepend-icon="$folderMultiple"
         />
-        <v-spacer/>
+        <v-spacer />
       </div>
     </v-card-text>
     <slot
@@ -244,6 +247,7 @@ export default {
   :deep(.v-card-item) {
     background-color: rgb(var(--v-theme-surface-light));
   }
+
   :deep(.v-card-text) {
     padding: 16px;
   }

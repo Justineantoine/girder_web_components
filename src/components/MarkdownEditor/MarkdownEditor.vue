@@ -48,17 +48,22 @@ export default {
           @change="$emit('changed', $event)"
         />
       </v-tabs-window-item>
-      <v-tabs-window-item value="preview" class="md-preview">
+      <v-tabs-window-item
+        value="preview"
+        class="md-preview"
+      >
         <girder-markdown :text="internalText" />
       </v-tabs-window-item>
     </v-tabs-window>
-    <v-toolbar
-    >
+    <v-toolbar>
       <span class="hidden-xs-only">
         Supports <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown</a>
       </span>
       <v-spacer />
-      <v-btn-toggle v-model="activeTab" mandatory>
+      <v-btn-toggle
+        v-model="activeTab"
+        mandatory
+      >
         <v-btn
           v-tooltip="'Write'"
           value="edit"
@@ -78,7 +83,6 @@ export default {
 
 <style lang="scss">
 .girder-markdown-editor {
-
   .v-toolbar__content {
     padding: 12px;
     align-items: center;
@@ -87,8 +91,7 @@ export default {
   .md-preview {
     padding: 16px;
     min-height: 152px;
-    background-color: rgba(var(--v-theme-on-surface), 0.04);
-    // opacity: 0.04;
+    background-color: rgb(var(--v-theme-on-surface) / 0.04);
   }
 
   a {

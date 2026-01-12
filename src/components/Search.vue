@@ -122,9 +122,9 @@ export default {
 <template>
   <div class="data-search">
     <v-text-field
+      :ref="searchField.name"
       v-model="searchText"
       :placeholder="placeholder"
-      :ref="searchField.name"
       variant="solo-filled"
       flat
       hide-details
@@ -146,8 +146,8 @@ export default {
         <v-list-item
           v-for="result in quickResults"
           :key="result._id"
-          @click="selectResult(result)"
           :title="result.name || formatUsername(result)"
+          @click="selectResult(result)"
         >
           <template #prepend>
             <v-icon :icon="getResourceIcon(result)" />
@@ -164,8 +164,8 @@ export default {
         </v-list-item>
         <v-list-item
           v-if="showMore && searchResults.length > maxQuickResults"
-          @click="$emit('moreResults', searchParams)"
           title="Show more results"
+          @click="$emit('moreResults', searchParams)"
         >
           <template #prepend>
             <v-icon icon="$more" />
@@ -177,7 +177,7 @@ export default {
       icon
       variant="flat"
     >
-      <v-icon icon="$settings"/>
+      <v-icon icon="$settings" />
       <v-menu
         v-if="!hideOptionsMenu"
         activator="parent"
@@ -190,8 +190,8 @@ export default {
           <div class="pa-3 d-flex flex-column align-center">
             <v-btn-toggle
               v-model="internalSearchMode"
-              @update:model-value="$emit('update:searchMode', $event);"
               mandatory
+              @update:model-value="$emit('update:searchMode', $event);"
             >
               <v-btn
                 v-for="mode in searchModeOptions"
@@ -201,11 +201,11 @@ export default {
                 size="small"
               />
             </v-btn-toggle>
-            <v-divider class="my-3"/>
+            <v-divider class="my-3" />
             <v-btn-toggle
               v-model="internalSearchTypes"
-              @update:model-value="$emit('update:searchTypes', $event);"
               multiple
+              @update:model-value="$emit('update:searchTypes', $event);"
             >
               <v-btn
                 v-for="searchType in searchTypeOptions"

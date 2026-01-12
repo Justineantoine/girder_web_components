@@ -44,7 +44,7 @@ export default class UploadManager extends UploadBase {
       const end = Math.min(this.offset + this.chunkLen, this.file.size);
       const blob = this.file.slice(this.offset, end);
       const url = `file/chunk?offset=${this.offset}&uploadId=${this.upload._id}`;
-      // eslint-disable-next-line no-await-in-loop
+       
       this.upload = (await this.$rest.post(url, blob, {
         onUploadProgress,
         headers: { 'Content-Type': 'application/octet-stream' },

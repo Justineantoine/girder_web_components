@@ -15,7 +15,7 @@
   })
 
   const onClick = computed(() => {
-    if (!props.href) return null
+    if (!props.href) {return null}
     return () => useGoTo(props.href)
   })
 </script>

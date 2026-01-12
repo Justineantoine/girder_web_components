@@ -4,10 +4,16 @@
     dense="dense"
     class="px-4"
   >
-    <div class="text-subtitle-1 font-weight-bold">
+    <div
+      v-if="!!title"
+      class="text-subtitle-1 font-weight-bold"
+    >
       {{ title }}
     </div>
-    <template v-for="(val, i) in rows" :key="`${i}-li`">
+    <template
+      v-for="(val, i) in rows"
+      :key="`${i}-li`"
+    >
       <v-list-item
         class="px-1"
         :href="val.href"
@@ -34,10 +40,12 @@ export default {
   name: 'GirderDetailList',
 
   props: {
-    title: { type: String, required: false },
+    title: { type: String, default: null },
     rows: { type: Array, required: true },
     clickable: { type: Boolean, default: false },
     noDividers: { type: Boolean, default: false }
   },
+
+  emits: ['click'],
 };
 </script>

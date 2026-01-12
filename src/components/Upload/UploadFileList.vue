@@ -10,6 +10,8 @@ export default {
     maxShow: { type: Number, default: 0 },
   },
 
+  emits: ['input'],
+
   setup(props) {
     const notDone = computed(() =>
       props.files.filter((f) => f.status !== 'done')
@@ -44,22 +46,45 @@ export default {
 
 <template>
   <v-list class="files-list">
-    <v-list-item v-for="(file, i) in shownFiles" :key="file.file.name" class="file-item">
+    <v-list-item
+      v-for="(file, i) in shownFiles"
+      :key="file.file.name"
+      class="file-item"
+    >
       <v-list-item-title>{{ file.file.name }}</v-list-item-title>
       <v-list-item-subtitle>
         <span v-if="file.progress.current">{{ formatSize(file.progress.current) }} /</span>
         <span>{{ formatSize(file.file.size) }}</span>
       </v-list-item-subtitle>
-      <template v-slot:append>
-        <v-icon v-if="file.status === 'pending'" v-tooltip="'Delete'" icon="$close"
-          @click="$emit('input', splice(i))" />
-        <v-icon v-if="file.status === 'error'" icon="$error" color="error" />
-        <v-progress-circular v-if="file.status === 'uploading'" :rotate="-90"
+      <template #append>
+        <v-icon
+          v-if="file.status === 'pending'"
+          v-tooltip="'Delete'"
+          icon="$close"
+          @click="$emit('input', splice(i))"
+        />
+        <v-icon
+          v-if="file.status === 'error'"
+          icon="$error"
+          color="error"
+        />
+        <v-progress-circular
+          v-if="file.status === 'uploading'"
+          :rotate="-90"
           :value="progressPercent({ ...file.progress, total: file.progress.size })"
-          :indeterminate="file.progress.indeterminate" color="primary" />
-        <v-icon v-if="file.status === 'done'" color="success" icon="$complete" />
+          :indeterminate="file.progress.indeterminate"
+          color="primary"
+        />
+        <v-icon
+          v-if="file.status === 'done'"
+          color="success"
+          icon="$complete"
+        />
       </template>
-      <slot v-bind="{ file }" name="item"></slot>
+      <slot
+        v-bind="{ file }"
+        name="item"
+      />
     </v-list-item>
     <v-list-item v-if="hiddenCount">
       <div>

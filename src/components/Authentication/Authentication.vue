@@ -21,6 +21,8 @@ export default {
     hideForgotPassword: { type: Boolean, default: false },
   },
 
+  emits: ['forgotpassword'],
+
   setup(props) {
     // Inject Girder REST client
     const { rest } = inject("girder");
@@ -45,7 +47,7 @@ export default {
         });
 
         oauthProviders.value = result.data || [];
-      } catch (e) {
+      } catch (_err) {
         oauthProviders.value = [];
       }
     });
@@ -61,19 +63,35 @@ export default {
 <template>
   <v-card class="authentication">
     <v-card-item>
-      <v-tabs v-model="activeTab" background-color="primary" dark="dark">
-        <v-tab text="Log In" value="login" />
-        <v-tab v-if="register" text="Register" value="registration" />
+      <v-tabs
+        v-model="activeTab"
+        background-color="primary"
+        dark="dark"
+      >
+        <v-tab
+          text="Log In"
+          value="login"
+        />
+        <v-tab
+          v-if="register"
+          text="Register"
+          value="registration"
+        />
       </v-tabs>
     </v-card-item>
     <v-card-text>
       <v-tabs-window v-model="activeTab">
         <v-tabs-window-item value="login">
-          <girder-login :oauth-providers="oauthProviders"
+          <girder-login
+            :oauth-providers="oauthProviders"
             v-bind="{ forceOtp, forgotPasswordUrl, forgotPasswordRoute, hideForgotPassword }"
-            @forgotpassword="$emit('forgotpassword')" />
+            @forgotpassword="$emit('forgotpassword')"
+          />
         </v-tabs-window-item>
-        <v-tabs-window-item v-if="register" value="registration">
+        <v-tabs-window-item
+          v-if="register"
+          value="registration"
+        >
           <girder-register :oauth-providers="oauthProviders" />
         </v-tabs-window-item>
       </v-tabs-window>
@@ -84,12 +102,12 @@ export default {
 <style scoped lang="scss">
 .authentication {
   :deep(.v-card-item) {
-    padding: 0px;
+    padding: 0;
     background-color: rgb(var(--v-theme-surface-light));
   }
 
   :deep(.v-card-text) {
-    padding: 0px;
+    padding: 0;
   }
 }
 </style>

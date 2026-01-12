@@ -30,10 +30,10 @@ export default {
     selectable: { type: Boolean, default: false },
     rootLocationDisabled: { type: Boolean, default: false },
     selected: { type: Array, default: () => [] },
-    options: {type: Object, default: {
+    options: {type: Object, default: () => ({
         itemsPerPage: 10,
-        page: 1,
-      }
+        page: 1
+      })
     },
     itemsPerPageOptions: { type: Array, default: () => [10, 25, 50] },
   },
@@ -42,6 +42,7 @@ export default {
     'drag',
     'dragend',
     'dragstart',
+    'drop',
     'row-right-click',
     'rowclick',
     'update:location',
@@ -268,7 +269,7 @@ export default {
         }
 
         counts.value = base;
-      } catch {
+      } catch (_err) {
         counts.value = base;
       }
     }
@@ -333,6 +334,7 @@ export default {
     :server-items-length="serverItemsLength"
     :loading="rowsLoading"
     :selectable="isSelectable"
+    class="data-browser"
     @rowclick="rowClick"
     @row-right-click="$emit('row-right-click', $event)"
     @drag="$emit('drag', $event)"
@@ -341,18 +343,20 @@ export default {
     @drop="$emit('drop', $event)"
     @update:selected="$emit('update:selected', $event)"
     @update:options="$emit('update:options', $event)"
-    class="data-browser"
   >
     <template #header>
-      <slot v-bind="{ location, changeLocation, rootLocationDisabled }" name="breadcrumb"></slot>
+      <slot
+        v-bind="{ location, changeLocation, rootLocationDisabled }"
+        name="breadcrumb"
+      />
       <v-spacer />
-      <slot name="headerwidget"></slot>
+      <slot name="headerwidget" />
     </template>
     <template #row="props">
       <slot
         v-bind="props"
         name="row"
-      ></slot>
+      />
     </template>
   </girder-data-table>
 </template>

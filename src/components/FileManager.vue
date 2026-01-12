@@ -84,8 +84,8 @@ export default {
     // ---- State ----
     const internalLocation = computed({
       get() {
-        if (props.location) return props.location;
-        if (lazyLocation.value) return lazyLocation.value;
+        if (props.location) {return props.location;}
+        if (lazyLocation.value) {return lazyLocation.value;}
         return { type: 'root' };
       },
       set(val) {
@@ -147,7 +147,7 @@ export default {
     }
 
     function rowRightClick({row, event}) {
-      if (props.noAccessControl) return;
+      if (props.noAccessControl) {return;}
   
       if (['collection', 'folder'].includes(row._modelType)) {
         collectionAndFolderMenu.show = false;
@@ -207,37 +207,75 @@ export default {
       @update:options="$emit('update:options', $event)"
       @update:selected="$emit('update:selected', $event)"
     >
-      <template #breadcrumb="{ location, changeLocation, rootLocationDisabled }">
+      <template #breadcrumb="breadcrumbProps">
         <girder-breadcrumb
-          :location="location"
-          :root-location-disabled="rootLocationDisabled"
+          :location="breadcrumbProps.location"
+          :root-location-disabled="breadcrumbProps.rootLocationDisabled"
           @crumbclick="changeLocation($event)"
         />
       </template>
       <template #headerwidget>
-        <slot name="headerwidget"></slot>
-        <v-btn v-if="shouldShowNewFolder" v-tooltip="{text: 'New folder', location: 'bottom'}" icon variant="text">
-          <v-icon color="primary" icon="$folderNew"/>
-          <v-dialog v-model="newFolderDialog" activator="parent" max-width="800px">
-            <girder-upsert-folder :key="internalLocation._id" :location="internalLocation" :pre-upsert="preUpsert"
-            :post-upsert="postUpsertInternal" @dismiss="newFolderDialog = false" />
+        <slot name="headerwidget" />
+        <v-btn
+          v-if="shouldShowNewFolder"
+          v-tooltip="{text: 'New folder', location: 'bottom'}"
+          icon
+          variant="text"
+        >
+          <v-icon
+            color="primary"
+            icon="$folderNew"
+          />
+          <v-dialog
+            v-model="newFolderDialog"
+            activator="parent"
+            max-width="800px"
+          >
+            <girder-upsert-folder
+              :key="internalLocation._id"
+              :location="internalLocation"
+              :pre-upsert="preUpsert"
+              :post-upsert="postUpsertInternal"
+              @dismiss="newFolderDialog = false"
+            />
           </v-dialog>
         </v-btn>
-        <v-btn v-if="shouldShowUpload" v-tooltip="{text: 'Upload files', location: 'bottom'}" icon variant="text">
-          <v-icon color="primary" icon="$fileNew"/>
-          <v-dialog v-model="uploaderDialog" activator="parent" max-width="800px">
-            <girder-upload :dest="uploadDest" :pre-upload="preUpload" :post-upload="postUploadInternal"
-              :multiple="uploadMultiple" :max-show="uploadMaxShow" :accept="uploadAccept" />
+        <v-btn
+          v-if="shouldShowUpload"
+          v-tooltip="{text: 'Upload files', location: 'bottom'}"
+          icon
+          variant="text"
+        >
+          <v-icon
+            color="primary"
+            icon="$fileNew"
+          />
+          <v-dialog
+            v-model="uploaderDialog"
+            activator="parent"
+            max-width="800px"
+          >
+            <girder-upload
+              :dest="uploadDest"
+              :pre-upload="preUpload"
+              :post-upload="postUploadInternal"
+              :multiple="uploadMultiple"
+              :max-show="uploadMaxShow"
+              :accept="uploadAccept"
+            />
           </v-dialog>
         </v-btn>
       </template>
       <template #row="props">
-        <slot v-bind="props" name="row"></slot>
+        <slot
+          v-bind="props"
+          name="row"
+        />
       </template>
     </girder-data-browser>
     <v-overlay
-      v-model="collectionAndFolderMenu.show"
       v-if="hasAccessPermission"
+      v-model="collectionAndFolderMenu.show"
       :scrim="false"
     >
       <v-list
@@ -248,8 +286,8 @@ export default {
         }"
       >
         <v-list-item
-          @click="showAccessControlDialog=true"
           title="Access Control"
+          @click="showAccessControlDialog=true"
         />
       </v-list>
     </v-overlay>
@@ -262,8 +300,8 @@ export default {
     >
       <girder-access-control
         v-if="actOnItem"
-        :model="actOnItem"
         v-model:has-permission="hasAccessPermission"
+        :model="actOnItem"
         @close="showAccessControlDialog=false"
         @model-access-changed="refresh"
       />
@@ -273,8 +311,8 @@ export default {
 
 <style lang="scss">
 .context-menu {
-  padding: 0px;
-  position: 'fixed';
+  padding: 0;
+  position: fixed;
   display: flex;
 }
 </style>

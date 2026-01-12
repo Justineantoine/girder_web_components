@@ -271,15 +271,30 @@ export default {
       style="background-color: rgb(var(--v-theme-surface-light));"
     >
       <template #prepend>
-        <v-icon class="pr-2 mdi-18px" :icon="icon"></v-icon>
+        <v-icon
+          class="pr-2 mdi-18px"
+          :icon="icon"
+        />
       </template>
       <template #title>
         {{ title }}
       </template>
       <template #append>
-        <v-btn v-if="datum && shouldShowNewFolder" v-tooltip="{text: 'New folder', location: 'bottom'}" icon variant="text">
-          <v-icon color="primary" icon="$folderNew"/>
-          <v-dialog v-model="newFolderDialog" activator="parent" max-width="800px">
+        <v-btn
+          v-if="datum && shouldShowNewFolder"
+          v-tooltip="{text: 'New folder', location: 'bottom'}"
+          icon
+          variant="text"
+        >
+          <v-icon
+            color="primary"
+            icon="$folderNew"
+          />
+          <v-dialog
+            v-model="newFolderDialog"
+            activator="parent"
+            max-width="800px"
+          >
             <girder-upsert-folder
               :key="datum._id"
               :edit="true"
@@ -290,7 +305,10 @@ export default {
         </v-btn>
       </template>
     </v-card-item>
-    <div v-if="details && details.description" class="px-4 text-subtitle-1 font-weight-bold">
+    <div
+      v-if="details && details.description"
+      class="px-4 text-subtitle-1 font-weight-bold"
+    >
       Description
     </div>
     <girder-markdown
@@ -328,8 +346,8 @@ export default {
       v-if="actions.length"
       clickable
       :rows="actions"
+      no-dividers
       @click="handleAction"
-      noDividers
     >
       <template #row="props">
         <v-btn
@@ -337,7 +355,7 @@ export default {
           :prepend-icon="props.datum.icon || props.datum.iconKey"
           block
           :text="props.datum.name"
-        ></v-btn>
+        />
       </template>
     </girder-detail-list>
   </v-card>

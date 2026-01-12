@@ -6,7 +6,7 @@
 
 import { mdi } from 'vuetify/iconsets/mdi';
 import colors from 'vuetify/lib/util/colors';
-import { GoogleIcon, MicrosoftIcon } from '@/icons/'
+import { GoogleIcon, MicrosoftIcon } from '@/icons/';
 
 export default {
   theme : {

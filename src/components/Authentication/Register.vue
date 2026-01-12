@@ -11,7 +11,7 @@ export default {
     oauthProviders: { type: Array, default: () => [] },
   },
 
-  setup(props) {
+  setup() {
     // ---- Injected client ----
     const { rest } = inject("girder");
 
@@ -96,32 +96,96 @@ export default {
 <template>
   <div class="register-widget">
     <v-container>
-      <v-alert v-for="err in alerts.errors" :key="err" class="mt-0" dismissible="dismissible"
-        type="error">
+      <v-alert
+        v-for="err in alerts.errors"
+        :key="err"
+        class="mt-0"
+        dismissible="dismissible"
+        type="error"
+      >
         {{ err }}
       </v-alert>
-      <v-alert v-for="info in alerts.infos" :key="info" class="mt-0" dismissible="dismissible"
-        type="info">
+      <v-alert
+        v-for="info in alerts.infos"
+        :key="info"
+        class="mt-0"
+        dismissible="dismissible"
+        type="info"
+      >
         {{ info }}
       </v-alert>
-      <v-form ref="form" @submit.prevent="register">
-        <v-text-field v-model="login" :rules="nonEmptyRules" variant="solo-filled" flat label="Username" type="text"
-          autofocus="autofocus" autocomplete="username" />
-        <v-text-field v-model="email" :rules="nonEmptyRules" variant="solo-filled" flat label="Email" type="email" />
-        <v-text-field v-model="firstName" :rules="nonEmptyRules" variant="solo-filled" flat label="First Name"
-          type="text" />
-        <v-text-field v-model="lastName" :rules="nonEmptyRules" variant="solo-filled" flat label="Last Name"
-          type="text" />
-        <v-text-field v-model="password" :rules="nonEmptyRules" variant="solo-filled" flat type="password"
-          label="Password" autocomplete="new-password" />
-        <v-text-field v-model="retypePassword" :rules="retypeMustMatchPasswordRules" variant="solo-filled" flat
-          type="password" label="Retype password" autocomplete="new-password" />
-        <v-btn :loading="inProgress" rounded variant="flat" type="submit" color="primary" text="Register" />
+      <v-form
+        ref="form"
+        @submit.prevent="register"
+      >
+        <v-text-field
+          v-model="login"
+          :rules="nonEmptyRules"
+          variant="solo-filled"
+          flat
+          label="Username"
+          type="text"
+          autofocus="autofocus"
+          autocomplete="username"
+        />
+        <v-text-field
+          v-model="email"
+          :rules="nonEmptyRules"
+          variant="solo-filled"
+          flat
+          label="Email"
+          type="email"
+        />
+        <v-text-field
+          v-model="firstName"
+          :rules="nonEmptyRules"
+          variant="solo-filled"
+          flat
+          label="First Name"
+          type="text"
+        />
+        <v-text-field
+          v-model="lastName"
+          :rules="nonEmptyRules"
+          variant="solo-filled"
+          flat
+          label="Last Name"
+          type="text"
+        />
+        <v-text-field
+          v-model="password"
+          :rules="nonEmptyRules"
+          variant="solo-filled"
+          flat
+          type="password"
+          label="Password"
+          autocomplete="new-password"
+        />
+        <v-text-field
+          v-model="retypePassword"
+          :rules="retypeMustMatchPasswordRules"
+          variant="solo-filled"
+          flat
+          type="password"
+          label="Retype password"
+          autocomplete="new-password"
+        />
+        <v-btn
+          :loading="inProgress"
+          rounded
+          variant="flat"
+          type="submit"
+          color="primary"
+          text="Register"
+        />
       </v-form>
     </v-container>
     <template v-if="oauthProviders && oauthProviders.length">
       <v-divider />
-      <girder-oauth :providers="oauthProviders" verb="Register" />
+      <girder-oauth
+        :providers="oauthProviders"
+        verb="Register"
+      />
     </template>
   </div>
 </template>
