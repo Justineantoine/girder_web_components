@@ -11,7 +11,7 @@ export default {
 
   emits: ['change'],
 
-  setup(ctx) {
+  setup(props, ctx) {
     const dropzoneClass = ref(null);
     const files = ref([]);
 

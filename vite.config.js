@@ -1,9 +1,10 @@
-import svgLoader from 'vite-svg-loader'
-import Vue from '@vitejs/plugin-vue'
-import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import dts from 'vite-plugin-dts';
+import svgLoader from 'vite-svg-loader';
+import Vue from '@vitejs/plugin-vue';
+import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 
-import { defineConfig } from 'vite'
-import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from 'vite';
+import { fileURLToPath, URL } from 'node:url';
 
 const isDemo = process.env.BUILD_DEMO === 'true';
 
@@ -17,6 +18,9 @@ export default defineConfig({
     // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
     Vuetify({
       autoImport: true,
+    }),
+    dts({
+      insertTypesEntry: true,
     }),
   ],
   optimizeDeps: {

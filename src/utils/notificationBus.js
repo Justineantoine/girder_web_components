@@ -20,8 +20,8 @@ export default class NotificationBus {
     this._poller = null;
 
     if (listenToRestClient) {
-      $rest.$on?.('login', () => { this.connect(); });
-      $rest.$on?.('logout', () => { this.disconnect(); });
+      $rest.on?.('login', () => { this.connect(); });
+      $rest.on?.('logout', () => { this.disconnect(); });
     }
   }
 

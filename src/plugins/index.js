@@ -11,14 +11,17 @@ export default function install(app, options = {}) {
   const girder = useGirderClient(options.girder || {});
   const notification = useNotificationBus(girder.rest, options.notification || {});
 
-  girder.rest.fetchUser().then(
-    (user) => {
-      girder.state.user = user
-      if (user) {
-        notification.bus.connect()
+  if (!!girder.apiRoot.value) {
+    girder.rest.fetchUser().then(
+      (user) => {
+        girder.user = user
+        if (user) {
+          notification.bus.connect()
+        }
       }
-    }
-  );
+    );
+  }
+  
 
   // Provide states
   app.provide('girder', girder);

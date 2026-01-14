@@ -41,7 +41,7 @@ export default class RestClient {
     this.token = token;
     this.user = null;
 
-    
+
     this.setLocalCookie = setLocalCookie;
     this.authenticateWithCredentials = authenticateWithCredentials;
     this.useGirderAuthorizationHeader = useGirderAuthorizationHeader;
@@ -84,7 +84,7 @@ export default class RestClient {
   async login(username, password, otp = null) {
     try {
       await this.logout();
-    } catch (err) {
+    } catch (_err) {
       // noop
     }
 
@@ -96,7 +96,7 @@ export default class RestClient {
     } else {
       auth = { username, password };
     }
-    if (otp) headers[GirderOtp] = otp;
+    if (otp) {headers[GirderOtp] = otp;}
 
     const resp = await this.get('user/authentication', {
       headers,
@@ -107,17 +107,17 @@ export default class RestClient {
     this.token = resp.data.authToken.token;
     this.user = resp.data.user;
 
-    if (this.setLocalCookie) setCookieFromAuth(resp.data.authToken);
+    if (this.setLocalCookie) {setCookieFromAuth(resp.data.authToken);}
     this.emit('login', this.user);
     return resp;
   }
 
   async logout() {
-    if (!this.token) return;
+    if (!this.token) {return;}
     try {
       await this.delete('user/authentication');
     } catch (err) {
-      if (!err.response || err.response.status !== 401) throw err;
+      if (!err.response || err.response.status !== 401) {throw err;}
     } finally {
       this.token = null;
       this.user = null;
@@ -129,7 +129,7 @@ export default class RestClient {
   async fetchUser() {
     const resp = await this.get('user/me');
     this.user = resp.data;
-    if (this.user === null) this.token = null;
+    if (this.user === null) {this.token = null;}
     return this.user;
   }
 
@@ -139,11 +139,11 @@ export default class RestClient {
       stringify({ login, email, firstName, lastName, password, admin })
     );
 
-    if (!resp.data.authToken) return resp;
+    if (!resp.data.authToken) {return resp;}
 
     this.token = resp.data.authToken.token;
     this.user = resp.data;
-    if (this.setLocalCookie) setCookieFromAuth(resp.data.authToken);
+    if (this.setLocalCookie) {setCookieFromAuth(resp.data.authToken);}
     this.emit('register', this.user);
     this.emit('login', this.user);
     return resp;

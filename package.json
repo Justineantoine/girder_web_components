@@ -12,11 +12,19 @@
   },
   "main": "dist/girder.umd.js",
   "module": "dist/girder.es.js",
-  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/girder.es.js",
+      "require": "./dist/girder.umd.js"
+    },
+    "./style.css": "./dist/components.css"
+  },
   "files": [
     "dist/",
-    "src/",
-    "types/"
+    "src/"
+  ],
+  "sideEffects": [
+    "*.css"
   ],
   "dependencies": {
     "@fontsource/roboto": "5.2.7",
@@ -47,6 +55,7 @@
     "stylelint-config-standard": "^39.0.1",
     "typescript": "^5",
     "vite": "^7.1.5",
+    "vite-plugin-dts": "^4.5.4",
     "vite-plugin-vuetify": "^2.1.2"
   }
 }
