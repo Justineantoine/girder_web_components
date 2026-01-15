@@ -48,11 +48,11 @@ export default {
     'update:selected',
     'update:location',
     'update:options',
-    'rowclick',
-    'row-right-click',
+    'rowClick',
+    'rowRightClick',
     'drag',
-    'dragstart',
-    'dragend',
+    'dragStart',
+    'dragEnd',
     'drop',
   ],
 
@@ -64,7 +64,6 @@ export default {
     const dataBrowser = useTemplateRef('data-browser');
     const uploaderDialog = ref(false);
     const newFolderDialog = ref(false);
-    const lazyLocation = ref(null);
 
     const collectionAndFolderMenu = reactive({
       show: false,
@@ -85,11 +84,9 @@ export default {
     const internalLocation = computed({
       get() {
         if (props.location) {return props.location;}
-        if (lazyLocation.value) {return lazyLocation.value;}
         return { type: 'root' };
       },
       set(val) {
-        lazyLocation.value = val;
         ctx.emit('update:location', val);
       },
     });
@@ -104,20 +101,25 @@ export default {
     const shouldShowNewFolder = computed(() =>
       props.newFolderEnabled &&
       !isRootLocation(internalLocation.value) &&
-      user.value
+      user && user.value
     );
 
     const shouldShowUpload = computed(() =>
       props.uploadEnabled &&
       !isRootLocation(internalLocation.value) &&
-      user.value &&
+      user && user.value &&
       uploadDest.value,
     );
 
     // ---- Validation ----
     if (!createLocationValidator(!props.rootLocationDisabled)(props.location)) {
+      if (!props.rootLocationDisabled) {
+        throw new Error(
+          'Location is not valid: must not be empty and have an _id and cannot be root',
+        );
+      }
       throw new Error(
-        'root location cannot be used when root-location-disabled is true',
+        'Location is not valid: must not be empty and have an _id',
       );
     }
 
@@ -199,10 +201,10 @@ export default {
       :items-per-page-options="itemsPerPageOptions"
       :selected="selected"
       @drag="$emit('drag', $event)"
-      @dragend="$emit('dragend', $event)"
-      @dragstart="$emit('dragstart', $event)"
+      @drag-end="$emit('dragEnd', $event)"
+      @drag-start="$emit('dragStart', $event)"
       @row-right-click="rowRightClick"
-      @rowclick="$emit('rowclick', $event)"
+      @row-click="$emit('rowClick', $event)"
       @update:location="$emit('update:location', $event)"
       @update:options="$emit('update:options', $event)"
       @update:selected="$emit('update:selected', $event)"
@@ -211,7 +213,7 @@ export default {
         <girder-breadcrumb
           :location="breadcrumbProps.location"
           :root-location-disabled="breadcrumbProps.rootLocationDisabled"
-          @crumbclick="changeLocation($event)"
+          @crumb-click="breadcrumbProps.changeLocation($event)"
         />
       </template>
       <template #headerwidget>
@@ -303,7 +305,7 @@ export default {
         v-model:has-permission="hasAccessPermission"
         :model="actOnItem"
         @close="showAccessControlDialog=false"
-        @model-access-changed="refresh"
+        @update:model-access="refresh"
       />
     </v-dialog>
   </v-card>

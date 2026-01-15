@@ -40,11 +40,11 @@ export default {
 
   emits: [
     'drag',
-    'dragend',
-    'dragstart',
+    'dragEnd',
+    'dragStart',
     'drop',
-    'row-right-click',
-    'rowclick',
+    'rowRightClick',
+    'rowClick',
     'update:location',
     'update:options',
     'update:selected',
@@ -81,14 +81,19 @@ export default {
 
     // ---- Validation ----
     if (!createLocationValidator(!props.rootLocationDisabled)(props.location)) {
+      if (!props.rootLocationDisabled) {
+        throw new Error(
+          'Location is not valid: must not be empty and have an _id and cannot be root',
+        );
+      }
       throw new Error(
-        'root location cannot be used when root-location-disabled is true',
+        'Location is not valid: must not be empty and have an _id',
       );
     }
   
     // ---- Methods ----
     function rowClick(row) {
-      ctx.emit('rowclick', row, props.location);
+      ctx.emit('rowClick', row, props.location);
       if (getLocationType(row) !== 'item') {
         changeLocation(row);
       }
@@ -335,11 +340,11 @@ export default {
     :loading="rowsLoading"
     :selectable="isSelectable"
     class="data-browser"
-    @rowclick="rowClick"
-    @row-right-click="$emit('row-right-click', $event)"
+    @row-click="rowClick"
+    @row-right-click="$emit('rowRightClick', $event)"
     @drag="$emit('drag', $event)"
-    @dragstart="$emit('dragstart', $event)"
-    @dragend="$emit('dragend', $event)"
+    @drag-start="$emit('dragStart', $event)"
+    @drag-end="$emit('dragEnd', $event)"
     @drop="$emit('drop', $event)"
     @update:selected="$emit('update:selected', $event)"
     @update:options="$emit('update:options', $event)"

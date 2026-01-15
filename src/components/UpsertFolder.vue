@@ -128,7 +128,6 @@ export default {
       <v-card-text>
         <v-text-field
           v-model="folderName"
-          autofocus="autofocus"
           label="Folder Name"
           variant="solo-filled"
           flat

@@ -125,7 +125,6 @@ export default {
           flat
           label="Username"
           type="text"
-          autofocus="autofocus"
           autocomplete="username"
         />
         <v-text-field

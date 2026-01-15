@@ -157,7 +157,7 @@ export default {
     const shouldShowNewFolder = computed(() =>
       props.newFolderEnabled &&
       !isRootLocation(props.value) &&
-      user.value
+      user && user.value
     );
 
     const info = computed(() => {
@@ -327,14 +327,14 @@ export default {
       title="Meta"
     >
       <template #row="props">
-        <v-row justify="space-between">
-          <v-col class="shrink py-1 body-2 font-weight-bold">
+        <div class="d-flex justify-space-between align-center">
+          <div class="text-body-2 font-weight-bold">
             {{ props.datum.key }}
-          </v-col>
-          <v-col class="py-1 body-2 d-flex justify-end">
+          </div>
+          <div class="text-body-2 font-weight-light">
             {{ props.datum.value }}
-          </v-col>
-        </v-row>
+          </div>
+        </div>
       </template>
     </girder-detail-list>
     <girder-detail-list

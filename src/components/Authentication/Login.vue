@@ -15,7 +15,7 @@ export default {
     oauthProviders: { type: Array, default: () => [] }
   },
 
-  emits: ['forgotpassword'],
+  emits: ['forgotPassword'],
 
   setup() {
     // ---- Constants ----
@@ -211,7 +211,7 @@ export default {
               variant="text"
               color="primary"
               text="Forgot password?"
-              @click="$emit('forgotpassword')"
+              @click="$emit('forgotPassword')"
             />
           </template>
         </div>

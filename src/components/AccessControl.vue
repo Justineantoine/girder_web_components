@@ -18,7 +18,7 @@ export default {
     hasPermission: { type: Boolean, required: false, default: false },
   },
 
-  emits: ['model-access-changed', 'update:hasPermission', 'close'],
+  emits: ['update:modelAccess', 'update:hasPermission', 'close'],
 
   setup(props, ctx) {
     // ---- Injected Client ----
@@ -81,7 +81,7 @@ export default {
         `${model._modelType}/${model._id}/access`,
         stringify(data),
       );
-      ctx.emit('model-access-changed', model);
+      ctx.emit('update:modelAccess', model);
       ctx.emit('close');
     }
 

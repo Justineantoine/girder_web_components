@@ -12,7 +12,7 @@ export default {
     rootLocationDisabled: { type: Boolean, default: false },
   },
 
-  emits: ['crumbclick'],
+  emits: ['crumbClick'],
   
   setup(props) {
     // ---- Injected client ----
@@ -29,8 +29,13 @@ export default {
 
     // ---- Validation ----
     if (!createLocationValidator(!props.rootLocationDisabled)(props.location)) {
+      if (!props.rootLocationDisabled) {
+        throw new Error(
+          'Location is not valid: must not be empty and have an _id and cannot be root',
+        );
+      }
       throw new Error(
-        'root location cannot be used when root-location-disabled is true',
+        'Location is not valid: must not be empty and have an _id',
       );
     }
 
@@ -113,7 +118,7 @@ export default {
       class="mdi-24px mr-3"
       color="primary"
       icon="$userHome"
-      @click="$emit('crumbclick', user)"
+      @click="$emit('crumbClick', user)"
     />
     <v-breadcrumbs
       :items="breadcrumb"
@@ -131,7 +136,7 @@ export default {
           :disabled="(readonly || breadcrumb.indexOf(item) == breadcrumb.length-1)"
           tag="a"
           style="cursor: pointer;"
-          @click="$emit('crumbclick', item)"
+          @click="$emit('crumbClick', item)"
         >
           <span
             v-if="['folder', 'user', 'collection'].indexOf(item.type) !== -1"

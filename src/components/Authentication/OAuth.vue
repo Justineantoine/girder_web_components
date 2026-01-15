@@ -10,13 +10,13 @@ export default {
   setup() {
     return {
       iconMap: {
-        github: { dark: true, icon: "$github" },
-        google: { dark: true, icon: "$google" },
-        linkedin: { dark: true, icon: "$linkedin" },
-        bitbucket: { dark: false, icon: "$bitbucket" },
-        box: { dark: true, icon: "$box_com" },
-        globus: { dark: true, icon: "$globe" },
-        microsoft: { dark: true, icon: "$microsoft" },
+        github: "$github",
+        google: "$google",
+        linkedin: "$linkedin",
+        bitbucket: "$bitbucket",
+        box: "$box_com",
+        globus: "$globe",
+        microsoft: "$microsoft",
       },
     };
   }
@@ -28,12 +28,11 @@ export default {
     <v-btn
       v-for="provider in providers"
       :key="provider.id"
-      :dark="iconMap[provider.id].dark"
       variant="tonal"
       rounded
       :href="provider.url"
       class="ml-0 mr-3"
-      :prepend-icon="iconMap[provider.id].icon"
+      :prepend-icon="iconMap[provider.id]"
       style="text-transform: none;"
     >
       {{ verb }}

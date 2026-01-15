@@ -21,7 +21,7 @@ export default {
     hideForgotPassword: { type: Boolean, default: false },
   },
 
-  emits: ['forgotpassword'],
+  emits: ['forgotPassword'],
 
   setup(props) {
     // Inject Girder REST client
@@ -46,7 +46,7 @@ export default {
           },
         });
 
-        oauthProviders.value = result.data || [];
+        oauthProviders.value = isArray(result.data) ? result.data : [];
       } catch (_err) {
         oauthProviders.value = [];
       }
@@ -85,7 +85,7 @@ export default {
           <girder-login
             :oauth-providers="oauthProviders"
             v-bind="{ forceOtp, forgotPasswordUrl, forgotPasswordRoute, hideForgotPassword }"
-            @forgotpassword="$emit('forgotpassword')"
+            @forgot-password="$emit('forgotPassword')"
           />
         </v-tabs-window-item>
         <v-tabs-window-item

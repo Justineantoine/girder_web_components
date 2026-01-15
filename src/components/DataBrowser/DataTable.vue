@@ -6,21 +6,25 @@ export default {
   name: 'GirderDataTable',
 
   props: {
-    draggable: {type: Boolean, default: false},
-    loading: {type: Boolean, required: true},
-    options: {type: Object, required: true},
     rows: {type: Array, required: true},
-    selectable: {type: Boolean, required: true},
     serverItemsLength: {type: Number, required: true},
+    draggable: {type: Boolean, default: false},
+    loading: {type: Boolean, default: false},
+    options: {type: Object, default: () => ({
+      itemsPerPage: 10,
+        page: 1
+      })
+    },
+    selectable: {type: Boolean, default: false},
     selected: {type: Array, default: () => []},
   },
 
   emits: [
     'drag',
-    'dragend',
-    'dragstart',
-    'row-right-click',
-    'rowclick',
+    'dragEnd',
+    'dragStart',
+    'rowRightClick',
+    'rowClick',
     'update:options',
     'update:selected',
   ],
@@ -51,7 +55,7 @@ export default {
       if (props.selectable && shiftKey) {
         toggleSelect(rowProps);
       } else {
-        ctx.emit('rowclick', rowProps.item);
+        ctx.emit('rowClick', rowProps.item);
       }
     }
 
@@ -144,10 +148,9 @@ export default {
         :draggable="draggable"
         :active="props.isSelected(props.internalItem)"
         :class="getRowClass(props.item)"
-        @click="handleRowClick($event, props)"
         @drag="emitDrag('drag', $event, [props])"
-        @dragstart="emitDrag('dragstart', $event, [props])"
-        @dragend="emitDrag('dragend', $event, [props])"
+        @drags-tart="emitDrag('dragStart', $event, [props])"
+        @drag-end="emitDrag('dragEnd', $event, [props])"
       >
         <td
           v-if="selectable"
@@ -161,7 +164,8 @@ export default {
         </td>
 
         <td
-          @contextmenu="$emit('row-right-click', { row: props.item, event: $event })"
+          @contextmenu="$emit('rowRightClick', { row: props.item, event: $event })"
+          @click="handleRowClick($event, props)"
         >
           <span
             :class="getItemClass(props.item)"

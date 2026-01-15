@@ -77,7 +77,7 @@ function logout() {
   rest.logout();
 }
 
-function dragend({ items }) {
+function dragEnd({ items }) {
   dropped.value = items;
 }
 
@@ -323,7 +323,7 @@ function postUpload() {
                 :root-location-disabled="rootLocationDisabled"
                 :upload-multiple="uploadMultiple"
                 :upload-enabled="uploadEnabled"
-                @dragend="dragend"
+                @drag-end="dragEnd"
               >
                 <template #row="props">
                   <i>{{ props.item.name }}</i>
